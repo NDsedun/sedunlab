@@ -1,0 +1,75 @@
+
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>https://sedunlab.com/</id>
+  <title>SedunLab</title>
+  <subtitle>DevOps, Homelab та туторіали українською</subtitle>
+  <updated>2026-06-26T13:26:28+03:00</updated>
+  <author>
+    <name>Andrew Sedun</name>
+    <uri>https://sedunlab.com/</uri>
+  </author>
+  <link rel="self" type="application/atom+xml" href="https://sedunlab.com/feed.xml"/>
+  <link rel="alternate" type="text/html" hreflang="uk"
+    href="https://sedunlab.com/"/>
+  <generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator>
+  <rights> © 2026 Andrew Sedun </rights>
+  <icon>/assets/img/favicons/favicon.ico</icon>
+  <logo>/assets/img/favicons/favicon-96x96.png</logo>
+
+
+  
+  <entry>
+    <title>Як я підняв Jekyll блог на VPS з AlmaLinux 9</title>
+    <link href="https://sedunlab.com/posts/jak-ja-pidnjav-jekyll-na-vps/" rel="alternate" type="text/html" title="Як я підняв Jekyll блог на VPS з AlmaLinux 9" />
+    <published>2025-01-15T12:00:00+02:00</published>
+  
+    <updated>2025-01-15T12:00:00+02:00</updated>
+  
+    <id>https://sedunlab.com/posts/jak-ja-pidnjav-jekyll-na-vps/</id>
+    <content type="text/html" src="https://sedunlab.com/posts/jak-ja-pidnjav-jekyll-na-vps/" />
+    <author>
+      <name>Andrew Sedun</name>
+    </author>
+
+  
+    
+    <category term="homelab" />
+    
+    <category term="devops" />
+    
+  
+
+  <summary>Вирішив завести технічний блог. Домен є, VPS є, CyberPanel крутиться — залишилось обрати платформу. Зупинився на Jekyll: статичний генератор, пишеш у Markdown, деплоїш просто файли. Жодних баз даних, жодного PHP.  Що знадобилось     VPS з AlmaLinux 9   CyberPanel (вже був встановлений)   Домен sedunlab.com   Трохи терпіння з rbenv 😄   Встановлення Ruby через rbenv  Системний Ruby в AlmaLinux 9 ...</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Привіт, SedunLab!</title>
+    <link href="https://sedunlab.com/posts/hello-sedunlab/" rel="alternate" type="text/html" title="Привіт, SedunLab!" />
+    <published>2025-01-15T12:00:00+02:00</published>
+  
+    <updated>2025-01-15T12:00:00+02:00</updated>
+  
+    <id>https://sedunlab.com/posts/hello-sedunlab/</id>
+    <content type="text/html" src="https://sedunlab.com/posts/hello-sedunlab/" />
+    <author>
+      <name>Andrew Sedun</name>
+    </author>
+
+  
+    
+    <category term="homelab" />
+    
+    <category term="devops" />
+    
+  
+
+  <summary>Це перша нотатка з моєї IT-лабораторії.  Що тут буде     DevOps експерименти   Homelab нотатки   Туторіали українською   Почнемо з того як я підняв цей сайт на VPS з AlmaLinux 9…</summary>
+
+  </entry>
+
+</feed>
+
+
