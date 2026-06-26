@@ -15,7 +15,7 @@ timezone: Europe/Kiev
 # ↓ --------------------------
 
 title: SedunLab
-tagline: Лабораторія з IT у руках
+tagline: IT Лабораторія
 description: DevOps, Homelab та туторіали українською
 
 # Fill in the protocol & hostname for your site.
@@ -36,11 +36,11 @@ social:
   fediverse_handle: # fill in your fediverse handle. E.g. "@username@domain.com"
   links:
     # The first element serves as the copyright owner's link
-    - https://twitter.com/username # change to your Twitter homepage
-    - https://github.com/username # change to your GitHub homepage
+    - https://twitter.com/NDsedun # change to your Twitter homepage
+    - https://github.com/NDsedun # change to your GitHub homepage
     # Uncomment below to add more social links
-    # - https://www.facebook.com/username
-    # - https://www.linkedin.com/in/username
+    - https://www.facebook.com/nd.sedun
+    - https://www.linkedin.com/in/nd-sedun
 
 # Site Verification Settings
 webmaster_verifications:
@@ -57,7 +57,7 @@ webmaster_verifications:
 # Web Analytics Settings
 analytics:
   google:
-    id: # fill in your Google Analytics ID
+    id: G-ZZ9TW862PY
   goatcounter:
     id: # fill in your GoatCounter ID
   umami:
