@@ -1,0 +1,22 @@
+---
+---
+
+@use 'abstracts/variables' with (
+  $theme: '{{ site.theme_mode }}'
+);
+
+/* prettier-ignore */
+@use 'main
+{%- if jekyll.environment == 'production' -%}
+  .bundle
+{%- endif -%}
+';
+
+/* append your custom style below */
+
+#sidebar {
+  background-image:
+    linear-gradient(rgba(128,128,128,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(128,128,128,0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
