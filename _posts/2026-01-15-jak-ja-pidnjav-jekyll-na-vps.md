@@ -1,6 +1,6 @@
 ---
 title: "Як я підняв Jekyll блог на VPS з AlmaLinux 9"
-date: 2025-01-15 12:00:00 +0200
+date: 2026-01-15 12:00:00 +0200
 categories: [homelab, devops]
 tags: [vps, jekyll, almalinux, cyberpanel, ruby, chirpy]
 ---

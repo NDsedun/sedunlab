@@ -1,6 +1,6 @@
 ---
 title: "Як додавати зображення у статті Jekyll"
-date: 2025-01-17 12:00:00 +0200
+date: 2026-01-17 12:00:00 +0200
 categories: [homelab, jekyll]
 tags: [jekyll, chirpy, markdown, images]
 image:

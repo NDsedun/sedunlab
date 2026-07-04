@@ -1,6 +1,6 @@
 ---
 title: "Git для блогу: як я організував автодеплой"
-date: 2025-01-16 12:00:00 +0200
+date: 2026-01-16 12:00:00 +0200
 categories: [devops, git]
 tags: [git, deploy, vps, automation]
 ---
