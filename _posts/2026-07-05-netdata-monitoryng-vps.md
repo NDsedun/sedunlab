@@ -4,7 +4,7 @@ date: 2026-07-05 12:00:00 +0200
 categories: [homelab, devops]
 tags: [netdata, monitoring, vps, almalinux, linux]
 image:
-  path: /assets/img/posts/netdata-dashboard.png
+  path: /assets/img/posts/netdata.png
   alt: Netdata дашборд — моніторинг VPS в реальному часі
 ---
 
