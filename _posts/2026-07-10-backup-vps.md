@@ -35,7 +35,7 @@ cat ~/.ssh/backup_key.pub
 Копіюємо публічний ключ на домашній сервер:
 
 ```bash
-ssh-copy-id -i ~/.ssh/backup_key.pub -p 22253 nd@home.sedunlab.com
+ssh-copy-id -i ~/.ssh/backup_key.pub root@home.com
 ```
 
 Або вручну — на Ubuntu server:
@@ -48,14 +48,14 @@ chmod 600 ~/.ssh/authorized_keys
 Перевіряємо підключення:
 
 ```bash
-ssh -i ~/.ssh/backup_key nd@home.sedunlab.com -p22253 "echo OK"
+ssh -i ~/.ssh/backup_key root@home.com "echo OK"
 # OK
 ```
 
 Створюємо папки для бекапів на Ubuntu:
 
 ```bash
-ssh -i ~/.ssh/backup_key nd@home.sedunlab.com -p22253 \
+ssh -i ~/.ssh/backup_key root@home.com  \
   "mkdir -p ~/backups/vps/{home,etc,db,docker}"
 ```
 
@@ -69,9 +69,9 @@ nano /root/backup.sh
 #!/bin/bash
 
 # === Налаштування ===
-REMOTE_USER="nd"
-REMOTE_HOST="home.sedunlab.com"
-REMOTE_PORT="22253"
+REMOTE_USER="root"
+REMOTE_HOST="home.com"
+REMOTE_PORT="22"
 REMOTE_DIR="/home/nd/backups/vps"
 SSH_KEY="/root/.ssh/backup_key"
 DATE=$(date +%Y-%m-%d)
@@ -134,7 +134,7 @@ _Перший запуск — бекап завершено за 2.5 хвили
 Перевіряємо що є на Ubuntu:
 
 ```bash
-ssh -i ~/.ssh/backup_key nd@home.sedunlab.com -p22253 \
+ssh -i ~/.ssh/backup_key root@home.com \
   "ls -lh ~/backups/vps/"
 ```
 
@@ -150,3 +150,42 @@ crontab -e
 ```
 
 Додаємо:
+
+0 3 * * * /root/backup.sh >> /var/log/backup.log 2>&1  
+
+Перевіряємо:
+
+```bash
+crontab -l
+```
+
+Тепер бекап працює автоматично щодня без участі людини.
+
+## Корисні команди
+
+```bash
+# Запустити бекап вручну
+bash /root/backup.sh
+
+# Переглянути лог
+tail -f /var/log/backup.log
+
+# Перевірити що є на Ubuntu
+ssh -i ~/.ssh/backup_key root@home.com \
+  "du -sh ~/backups/vps/*"
+
+# Відновити конкретний файл
+rsync -avz \
+  -e "ssh -i ~/.ssh/backup_key" \
+  root@home.com:~/backups/vps/home/sedunlab.com/ \
+  /home/sedunlab.com/
+```
+
+## Висновок
+
+Rsync ідеальний для інкрементальних бекапів — копіює тільки
+змінені файли, тому кожен наступний запуск набагато швидший
+за перший. З cron це повністю автоматично.
+
+Наступний крок — додати бекап на Google Drive через rclone
+для додаткової надійності. Але це вже тема окремої статті.
