@@ -50,7 +50,7 @@ layout: default
   {% for post in posts %}
     {% if forloop.first and paginator.page == 1 %}
       <!-- Featured Post (Latest) -->
-      <div class="col-12">
+      <div class="col-12 mb-4 mb-md-5">
         <article class="card h-100 post-card featured-post-card border-0 shadow-sm">
           <a href="{{ post.url | relative_url }}" class="text-decoration-none text-reset d-flex flex-column flex-md-row h-100">
             {% if post.image %}
@@ -107,7 +107,7 @@ layout: default
 
               <h2 class="card-title h4 fw-bold line-clamp-2 my-2">{{ post.title }}</h2>
 
-              <div class="card-text content mt-0 mb-3 text-muted line-clamp-3">
+              <div class="card-text content mt-0 mb-3 text-muted line-clamp-4">
                 <p>{% include post-summary.html %}</p>
               </div>
 
@@ -185,7 +185,7 @@ layout: default
 
               <h2 class="card-title h5 fw-bold line-clamp-2 my-2">{{ post.title }}</h2>
 
-              <div class="card-text content mt-0 mb-3 text-muted line-clamp-3">
+              <div class="card-text content mt-0 mb-3 text-muted line-clamp-4">
                 <p>{% include post-summary.html %}</p>
               </div>
 
