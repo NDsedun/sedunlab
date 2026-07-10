@@ -14,6 +14,12 @@
 
 /* append your custom style below */
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+body, h1, h2, h3, h4, h5, h6, .site-title, .site-subtitle, .post-title, .post-content {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+}
+
 #sidebar {
   background-image:
     linear-gradient(rgba(128,128,128,0.08) 1px, transparent 1px),

@@ -3,6 +3,9 @@ title: "Бекап VPS на Google Drive через rclone"
 date: 2026-07-10 15:00:00 +0200
 categories: [homelab, devops]
 tags: [backup, rclone, google-drive, linux, vps]
+image:
+  path: /assets/img/posts/rclone-gdrive.png
+  alt: Rclone + Google Drive
 ---
 
 Попередня стаття описувала бекап на домашній Ubuntu server через rsync.
