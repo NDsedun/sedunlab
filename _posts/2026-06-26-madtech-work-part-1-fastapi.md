@@ -80,6 +80,7 @@ client = AsyncOpenAI(
 
 Для генерації контенту просимо модель повертати **строго JSON** — це дозволяє парсити відповідь прямо під час стримінгу:
 
+{% raw %}
 ```python
 system_prompt = (
     f"You are a witty tech blogger. Write EXCLUSIVELY {lang_name}. "
@@ -88,6 +89,7 @@ system_prompt = (
     f"body must contain 4-6 paragraphs in <p> tags."
 )
 ```
+{% endraw %}
 
 ### SSE стримінг
 
