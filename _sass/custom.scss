@@ -74,31 +74,3 @@
 .fs-7 {
   font-size: 0.8rem;
 }
-
-/* Featured Post Card (Horizontal on Desktop) */
-@media (min-width: 768px) {
-  .featured-post-card {
-    & > a {
-      display: flex !important;
-      flex-direction: row !important;
-      align-items: stretch !important;
-    }
-
-    .post-card-img-wrapper {
-      width: 50% !important;
-      flex: 0 0 50% !important;
-      aspect-ratio: auto !important;
-      min-height: 100% !important;
-      
-      img {
-        height: 100% !important;
-        object-fit: cover !important;
-      }
-    }
-
-    .card-body {
-      width: 50% !important;
-      flex: 0 0 50% !important;
-    }
-  }
-}

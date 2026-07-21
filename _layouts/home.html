@@ -52,7 +52,7 @@ layout: default
       <!-- Featured Post (Latest) -->
       <div class="col-12 mb-4 mb-md-5">
         <article class="card h-100 post-card featured-post-card border-0 shadow-sm">
-          <a href="{{ post.url | relative_url }}" class="text-decoration-none text-reset d-flex flex-column flex-md-row h-100">
+          <a href="{{ post.url | relative_url }}" class="text-decoration-none text-reset d-flex flex-column h-100">
             {% if post.image %}
               {% assign src = post.image.path | default: post.image %}
 
@@ -86,26 +86,26 @@ layout: default
 
               {% assign alt = post.image.alt | xml_escape | default: 'Preview Image' %}
 
-              <div class="post-card-img-wrapper overflow-hidden col-12 col-md-6" style="aspect-ratio: 16/9; min-height: 250px;">
+              <div class="post-card-img-wrapper overflow-hidden rounded-top" style="aspect-ratio: 21/9; min-height: 220px;">
                 <img src="{{ src }}" alt="{{ alt }}" class="w-100 h-100" style="object-fit: cover;" {{ lqip_attr }}>
               </div>
             {% endif %}
 
-            <div class="card-body d-flex flex-column p-4 {% if post.image %}col-12 col-md-6{% endif %}">
+            <div class="card-body d-flex flex-column p-4">
               <div class="post-meta-top mb-2 d-flex align-items-center justify-content-between text-muted fs-7">
                 <div>
                   <i class="far fa-calendar fa-fw me-1"></i>
                   {% include datetime.html date=post.date lang=lang %}
                 </div>
                 <div>
-                  <span class="badge bg-primary rounded-pill me-1">Нове</span>
+                  <span class="badge bg-primary rounded-pill me-1">Останнє</span>
                   {% if post.pin %}
                     <span class="badge bg-danger rounded-pill"><i class="fas fa-thumbtack me-1"></i>Pin</span>
                   {% endif %}
                 </div>
               </div>
 
-              <h2 class="card-title h4 fw-bold line-clamp-2 my-2">{{ post.title }}</h2>
+              <h2 class="card-title h3 fw-bold line-clamp-2 my-2">{{ post.title }}</h2>
 
               <div class="card-text content mt-0 mb-3 text-muted line-clamp-4">
                 <p>{% include post-summary.html %}</p>
