@@ -79,11 +79,11 @@ _Термінал показує `root@cp` — ми на сервері_
 Щоб не вводити пароль щоразу — переконайся що SSH ключ
 додано в `~/.ssh/config` на Windows:  
 
-Host vps
-HostName sedunlab.com
-User root
-Port 22
-IdentityFile ~/.ssh/id_ed25519  
+Host vps  
+HostName sedunlab.com  
+User root  
+Port 22  
+IdentityFile ~/.ssh/id_ed25519    
 
 Тоді в Remote Explorer просто клікаєш на `vps` і одразу
 всередині без пароля.
