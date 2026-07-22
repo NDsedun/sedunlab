@@ -55,10 +55,25 @@ rclone lsd gdrive:
 Відкриваємо `/root/backup.sh` і додаємо перед останнім `echo`:
 
 ```bash
-# === Google Drive — раз на тиждень у неділю ===
+# === Бекап на Google Drive (раз на тиждень) ===
 if [ $(date +%u) -eq 7 ]; then
   echo "Копіюємо на Google Drive..." >> $LOG
-  rclone sync /home/nd/backups/vps/ gdrive:backups/vps/ 2>> $LOG
+  
+  # Копіюємо домашні папки з виключенням кешу
+  rclone sync /home/ gdrive:backups/vps/home/ \
+    --exclude "sedunlab.com/public_html/cache/**" \
+    2>> $LOG
+    
+  # Копіюємо конфігурацію /etc/
+  rclone sync /etc/ gdrive:backups/vps/etc/ 2>> $LOG
+  
+  # Копіюємо docker volumes
+  rclone sync /var/lib/docker/volumes/ gdrive:backups/vps/docker/ 2>> $LOG
+  
+  # Якщо ви хочете також бекапити БД на Google Drive, 
+  # варто робити rclone sync ДУБЛЮЮЧИ дамп бази даних перед видаленням /tmp/backup_db,
+  # або не видаляти його до завершення перевірки дня тижня.
+  
   echo "Google Drive бекап завершено" >> $LOG
 fi
 ```
@@ -75,8 +90,6 @@ rclone lsd gdrive:backups/
 # Розмір бекапів
 rclone size gdrive:backups/vps/
 
-# Синхронізувати вручну
-rclone sync ~/backups/vps/ gdrive:backups/vps/
 
 # Видалити тестову папку
 rclone purge gdrive:backups/test/
