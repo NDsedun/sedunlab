@@ -47,13 +47,13 @@ mermaid: true
 Tailscale об'єднає TrueNAS та віртуальну машину в безпечну пряму тунельну мережу, повністю ігноруючи обмеження віртуалізації.
 
 ```mermaid
-graph LR
-    subgraph Physical Network
-        Router((Router)) <--> TrueNAS[TrueNAS SCALE]
-        Router <--> VM[Ubuntu VM]
+flowchart LR
+    subgraph "Фізична мережа"
+        Router((Роутер)) <--> TrueNAS["TrueNAS SCALE (192.168.50.67)"]
+        Router <--> VM["Ubuntu VM (192.168.50.125)"]
     end
-    subgraph Tailscale Secure Tunnel
-        TrueNAS_TS[TrueNAS: 100.x.y.1] <.=== WireGuard ===.> VM_TS[Ubuntu VM: 100.x.y.2]
+    subgraph "Безпечний тунель Tailscale"
+        TrueNAS_TS["TrueNAS: 100.x.y.1"] <--> |"Шифрований WireGuard"| VM_TS["Ubuntu VM: 100.x.y.2"]
     end
     style TrueNAS_TS fill:#ff9900,stroke:#333,stroke-width:2px
     style VM_TS fill:#0099ff,stroke:#333,stroke-width:2px
