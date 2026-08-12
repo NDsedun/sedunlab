@@ -6,6 +6,7 @@ tags: [tailscale, vpn, truenas, kvm, мережа]
 image:
   path: /assets/img/posts/tailscale-homelab.webp
   alt: Схема мережі Tailscale в Homelab
+mermaid: true
 ---
 
 У світі домашніх лабораторій (Homelab) дуже популярний сценарій: у вас є потужний сервер збереження даних (наприклад, **TrueNAS SCALE**), всередині якого ви запускаєте віртуальні машини (наприклад, **Ubuntu Server**) для крутіння Docker-контейнерів, моніторингу Prometheus чи медіасерверів.
