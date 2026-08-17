@@ -75,16 +75,16 @@
     </button>
 
     <!-- Language Switcher -->
-    <div id="language-switcher" class="d-flex align-items-center ms-2 ms-lg-3">
+    <div id="language-switcher" class="d-flex align-items-center ms-3">
       {% if page.url contains '/en/' %}
         {% assign target_url = page.alt_lang_url | default: '/' %}
-        <a href="{{ target_url | relative_url }}" class="text-decoration-none" title="Українська оригінал" onclick="sessionStorage.setItem('lang-override', 'uk')">
-          <span style="font-size: 1.2rem; cursor: pointer;">🇺🇦</span>
+        <a href="{{ target_url | relative_url }}" class="fw-semibold text-decoration-none" style="font-size: 0.9rem; color: var(--text-muted-color);" title="Українська оригінал" onclick="sessionStorage.setItem('lang-override', 'uk')">
+          UA
         </a>
       {% else %}
         {% assign target_url = page.alt_lang_url | default: '/en/' %}
-        <a href="{{ target_url | relative_url }}" class="text-decoration-none" title="English translation" onclick="sessionStorage.setItem('lang-override', 'en')">
-          <span style="font-size: 1.2rem; cursor: pointer;">🇬🇧</span>
+        <a href="{{ target_url | relative_url }}" class="fw-semibold text-decoration-none" style="font-size: 0.9rem; color: var(--text-muted-color);" title="English translation" onclick="sessionStorage.setItem('lang-override', 'en')">
+          EN
         </a>
       {% endif %}
     </div>
