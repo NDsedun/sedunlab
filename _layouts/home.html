@@ -4,46 +4,61 @@ layout: default
 
 {% include lang.html %}
 
-{% assign all_pinned = site.posts | where: 'pin', 'true' %}
-{% assign all_normal = site.posts | where_exp: 'item', 'item.pin != true and item.hidden != true' %}
-
-{% assign posts = '' | split: '' %}
-
-<!-- Get pinned posts on current page -->
-
-{% assign visible_start = paginator.page | minus: 1 | times: paginator.per_page %}
-{% assign visible_end = visible_start | plus: paginator.per_page %}
-
-{% if all_pinned.size > visible_start %}
-  {% if all_pinned.size > visible_end %}
-    {% assign pinned_size = paginator.per_page %}
-  {% else %}
-    {% assign pinned_size = all_pinned.size | minus: visible_start %}
-  {% endif %}
-
-  {% for i in (visible_start..all_pinned.size) limit: pinned_size %}
-    {% assign posts = posts | push: all_pinned[i] %}
-  {% endfor %}
+{% if page.url contains '/en/' %}
+  <!-- English Homepage: Show all English posts without pagination -->
+  <script>
+    // Save language override so clicking Home doesn't redirect back to UA
+    sessionStorage.setItem('lang-override', 'en');
+  </script>
+  {% assign posts = site.posts | where: 'lang', 'en' %}
 {% else %}
-  {% assign pinned_size = 0 %}
-{% endif %}
+  <!-- Ukrainian Homepage: Show only UA posts and handle browser language redirect -->
+  <script>
+    const userLang = navigator.language || navigator.userLanguage;
+    if (userLang && !userLang.startsWith('uk') && !sessionStorage.getItem('lang-override')) {
+        window.location.replace('{{ "/en/" | relative_url }}');
+    }
+  </script>
+  
+  {% assign all_pinned = site.posts | where: 'pin', 'true' | where_exp: 'item', 'item.lang != "en"' %}
+  {% assign all_normal = site.posts | where_exp: 'item', 'item.pin != true and item.hidden != true' | where_exp: 'item', 'item.lang != "en"' %}
 
-<!-- Get normal posts on current page -->
+  {% assign posts = '' | split: '' %}
 
-{% assign normal_size = paginator.posts | size | minus: pinned_size %}
+  <!-- Get pinned posts on current page -->
+  {% assign visible_start = paginator.page | minus: 1 | times: paginator.per_page %}
+  {% assign visible_end = visible_start | plus: paginator.per_page %}
 
-{% if normal_size > 0 %}
-  {% if pinned_size > 0 %}
-    {% assign normal_start = 0 %}
+  {% if all_pinned.size > visible_start %}
+    {% if all_pinned.size > visible_end %}
+      {% assign pinned_size = paginator.per_page %}
+    {% else %}
+      {% assign pinned_size = all_pinned.size | minus: visible_start %}
+    {% endif %}
+
+    {% for i in (visible_start..all_pinned.size) limit: pinned_size %}
+      {% assign posts = posts | push: all_pinned[i] %}
+    {% endfor %}
   {% else %}
-    {% assign normal_start = visible_start | minus: all_pinned.size %}
+    {% assign pinned_size = 0 %}
   {% endif %}
 
-  {% assign normal_end = normal_start | plus: normal_size | minus: 1 %}
+  <!-- Get normal posts on current page -->
+  {% assign normal_size = paginator.posts | size | minus: pinned_size %}
 
-  {% for i in (normal_start..normal_end) %}
-    {% assign posts = posts | push: all_normal[i] %}
-  {% endfor %}
+  {% if normal_size > 0 %}
+    {% if pinned_size > 0 %}
+      {% assign normal_start = 0 %}
+    {% else %}
+      {% assign normal_start = visible_start | minus: all_pinned.size %}
+    {% endif %}
+
+    {% assign normal_end = normal_start | plus: normal_size | minus: 1 %}
+
+    {% for i in (normal_start..normal_end) %}
+      {% assign posts = posts | push: all_normal[i] %}
+    {% endfor %}
+  {% endif %}
 {% endif %}
 
 <div id="post-list" class="row g-4 px-xl-1">
