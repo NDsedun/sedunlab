@@ -6,6 +6,11 @@ tags: [dns, adguard, reverse-proxy, nginx, homelab, мережа]
 image:
   path: /assets/img/posts/adguard-nginx-cover.webp
   alt: Локальні домени в домашній мережі
+alt_lang_url: /posts/local-domains-adguard-nginx-proxy-en/
+---
+
+[🇬🇧 Read this article in English](/posts/local-domains-adguard-nginx-proxy-en/)
+
 ---
 
 Коли кількість сервісів у домашній лабораторії (Homelab) починає перевищувати три-чотири, настає біль. Запам'ятовувати десятки адрес на кшталт `192.168.50.125:3000` (Grafana), `192.168.50.125:8080` (інший сервіс) чи `192.168.50.67:32400` (Plex) стає просто неможливо.

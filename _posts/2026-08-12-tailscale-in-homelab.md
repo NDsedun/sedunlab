@@ -7,6 +7,11 @@ image:
   path: /assets/img/posts/tailscale-homelab.webp
   alt: Схема мережі Tailscale в Homelab
 mermaid: true
+alt_lang_url: /posts/tailscale-in-homelab-en/
+---
+
+[🇬🇧 Read this article in English](/posts/tailscale-in-homelab-en/)
+
 ---
 
 У світі домашніх лабораторій (Homelab) дуже популярний сценарій: у вас є потужний сервер збереження даних (наприклад, **TrueNAS SCALE**), всередині якого ви запускаєте віртуальні машини (наприклад, **Ubuntu Server**) для крутіння Docker-контейнерів, моніторингу Prometheus чи медіасерверів.

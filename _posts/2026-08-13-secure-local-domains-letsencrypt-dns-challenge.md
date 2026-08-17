@@ -6,6 +6,11 @@ tags: [ssl, letsencrypt, godaddy, reverse-proxy, nginx, безпека]
 image:
   path: /assets/img/posts/godaddy-ssl-cover.webp
   alt: SSL-сертифікати для локальної мережі
+alt_lang_url: /posts/secure-local-domains-letsencrypt-dns-challenge-en/
+---
+
+[🇬🇧 Read this article in English](/posts/secure-local-domains-letsencrypt-dns-challenge-en/)
+
 ---
 
 Ми вже навчилися давати красиві імена нашим локальним сервісам за допомогою AdGuard Home та Nginx Proxy Manager. Проте відкриття адрес типу `http://grafana.home` все ще показує в адресному рядку неприємне «Не захищено».

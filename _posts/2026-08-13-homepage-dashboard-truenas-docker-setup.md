@@ -6,6 +6,11 @@ tags: [dashboard, homepage, docker, truenas, моніторинг]
 image:
   path: /assets/img/posts/homepage-setup-cover.webp
   alt: Дашборд Homepage у домашній лабораторії
+alt_lang_url: /posts/homepage-dashboard-truenas-docker-setup-en/
+---
+
+[🇬🇧 Read this article in English](/posts/homepage-dashboard-truenas-docker-setup-en/)
+
 ---
 
 У попередніх статтях ми розгорнули повноцінну локальну інфраструктуру, навели лад із доменами та захистили трафік за допомогою SSL. Настав час об'єднати всі наші сервіси (Grafana, AdGuard, Plex, Transmission, UrBackup) в одну красиву, сучасну та інформативну стартову сторінку.

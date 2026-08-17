@@ -7,6 +7,11 @@ image:
   path: /assets/img/posts/mermaid-guide.webp
   alt: Посібник з малювання схем у Mermaid
 mermaid: true
+alt_lang_url: /posts/how-to-draw-with-mermaid-en/
+---
+
+[🇬🇧 Read this article in English](/posts/how-to-draw-with-mermaid-en/)
+
 ---
 
 Будь-який технічний блог, документація чи опис проекту стають у рази зрозумілішими, якщо додати до них візуальну схему. Зазвичай розробники малюють графіки в графічних редакторах (як-от draw.io чи Figma), експортують їх у PNG та додають картинкою.
