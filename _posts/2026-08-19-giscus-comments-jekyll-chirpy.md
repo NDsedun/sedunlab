@@ -6,6 +6,11 @@ tags: [jekyll, giscus, github, коментарі, документація]
 image:
   path: /assets/img/posts/giscus-comments-cover.webp
   alt: Інтеграція коментарів Giscus у блог
+alt_lang_url: /posts/giscus-comments-jekyll-chirpy-en/
+---
+
+[🇬🇧 Read this article in English](/posts/giscus-comments-jekyll-chirpy-en/)
+
 ---
 
 Коли ваш персональний блог чи homelab-довідник починає обростати статтями, з'являється потреба у зворотному зв'язку. Читачі хочуть ставити запитання, вказувати на неточності або просто ділитися своїм досвідом.
