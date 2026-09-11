@@ -156,8 +156,22 @@ Your complete folder hierarchy, notes, canvas boards, and embedded images will i
 
 ---
 
+## Step 5. Activating the Active Sync Mode
+
+Following the initial setup wizard or URI import, the plugin often remains in a passive or manual state to prevent accidental overwrites. To ensure modifications replicate automatically across all devices, verify these toggles on **PC, tablet, and smartphone**:
+
+1. Open **Self-hosted LiveSync** options.
+2. Scroll to the **Synchronisation** section:
+   * **Sync Mode**: Ensure it is configured to **`LiveSync`** (instant real-time replication as you type) or **`Periodic`**.
+   * **Sync on Save**: Enable this so the plugin commits changes whenever you finish writing.
+   * **Sync on Startup**: Must be **Enabled** — guarantees the local vault reconciles against the server immediately upon opening the app.
+3. **Manual Validation**: Press `Ctrl + P` (on desktop) or swipe down from the top (on mobile) and trigger `LiveSync: Synchronise now`. A status badge will confirm active item dispatch.
+
+---
+
 ## Common Troubleshooting & Gotchas
 
+* **Deferred Offline Sync (Is External Access Mandatory?)**: If you prefer not to expose your server to the public internet or run a continuous VPN — it is completely unnecessary! Because Obsidian is built on a **Local-First** architecture, you can freely draft notes on your phone or iPad on a commute, in the subway, or on an airplane entirely offline. Edits queue safely in the local changelog. The moment you step through your front door and your device reconnects to your home Wi-Fi, LiveSync seamlessly handshakes with your home server, pushes your offline revisions, and pulls any new notes drafted on your PC.
 * **`Checking configuration failed`**: If Obsidian cannot establish a connection, inspect client DNS resolution. Verify the device queries your local DNS (AdGuard Home) rather than a stock router fallback that cannot resolve local records.
 * **Syncing on the Go (Cellular / Remote Wi-Fi)**: To sync outside your home, run **Tailscale** or publish the endpoint safely via **Cloudflare Tunnel**. Because LiveSync applies client-side AES encryption, passing data over the public internet remains zero-trust and completely safe.
 * **Multi-User Isolation**: Multiple household members can use the same server by pointing to dedicated database namespaces (e.g., `obsidian_user1` and `obsidian_user2`) paired with unique E2EE passphrases.
