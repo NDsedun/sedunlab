@@ -60,7 +60,7 @@ Written in C (or Go), Endlessh relies on asynchronous non-blocking `poll()` rout
 
 ## Step 1. Relocating Real OpenSSH to a Protected Port
 
-Before opening the trap on port 22, move your genuine administrative SSH listener to a non-standard port (such as `53798` or any alternative high port).
+Before opening the trap on port 22, move your genuine administrative SSH listener to a non-standard port (such as `1234` or any alternative high port).
 
 > ⚠️ **Warning:** Keep your existing terminal session alive until you confirm successful login via a secondary window, ensuring you do not lock yourself out!
 
@@ -70,20 +70,20 @@ Before opening the trap on port 22, move your genuine administrative SSH listene
    ```
 2. Locate `#Port 22` or `Port 22`, uncomment it, and specify your new port:
    ```text
-   Port 53798
+   Port 1234
    ```
 3. Allow the new port through your system firewall:
    * **If using UFW (Ubuntu/Debian):**
      ```bash
-     sudo ufw allow 53798/tcp
+     sudo ufw allow 1234/tcp
      sudo ufw reload
      ```
    * **If using Firewalld (CentOS/AlmaLinux/RHEL):**
      ```bash
-     sudo firewall-cmd --permanent --add-port=53798/tcp
+     sudo firewall-cmd --permanent --add-port=1234/tcp
      sudo firewall-cmd --reload
      ```
-4. If you run **Fail2ban**, ensure you update the monitored port in `/etc/fail2ban/jail.local` (`port = 53798` under the `[sshd]` jail section) and restart the service:
+4. If you run **Fail2ban**, ensure you update the monitored port in `/etc/fail2ban/jail.local` (`port = 1234` under the `[sshd]` jail section) and restart the service:
    ```bash
    sudo systemctl restart fail2ban
    ```
@@ -93,7 +93,7 @@ Before opening the trap on port 22, move your genuine administrative SSH listene
    ```
 6. **Mandatory Verification**: Open a new terminal on your local machine and verify connectivity:
    ```bash
-   ssh -p 53798 user@your-server-ip
+   ssh -p 1234 user@your-server-ip
    ```
    Once logged in, standard port 22 is officially liberated for our trap!
 
