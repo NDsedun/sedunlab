@@ -1,1 +1,7 @@
 _site/
+.jekyll-cache/
+client_secrets.json
+token.json
+auth_url.txt
+*.mp4
+upload_to_youtube.py
