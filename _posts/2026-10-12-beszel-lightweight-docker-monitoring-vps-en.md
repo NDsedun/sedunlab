@@ -6,6 +6,8 @@ tags: [beszel, docker, monitoring, vps, homelab, linux, devops]
 image:
   path: /assets/img/posts/beszel-cover.jpg
   alt: Beszel lightweight and modern server and Docker monitoring
+lang: en
+hidden: true
 alt_lang_url: /posts/beszel-lightweight-docker-monitoring-vps/
 ---
 
