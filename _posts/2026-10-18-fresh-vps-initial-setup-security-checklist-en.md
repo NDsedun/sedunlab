@@ -2,7 +2,7 @@
 title: "Fresh Linux VPS Hardening Checklist: 7 Essential Steps Right After First Login"
 date: 2026-10-18 14:00:00 +0300
 categories: [vps, security]
-tags: [vps, security, linux, ssh, ufw, fail2ban, hardening, devops]
+tags: [vps, security, linux, ssh, ufw, firewalld, fail2ban, hardening, devops, almalinux, ubuntu]
 image:
   path: /assets/img/posts/vps-hardening-cover.jpg
   alt: Fresh Linux VPS Security Hardening Checklist
@@ -21,19 +21,21 @@ Wait. **The public internet is an active war zone.**
 
 As we demonstrated firsthand in our [Cowrie SSH Honeypot analysis](/posts/cowrie-ssh-honeypot-vps-en/), automated botnets and malicious scanners begin pounding on port 22 within **3 to 5 minutes** of a public IPv4 address going live. Leaving your server in its default, out-of-the-box state makes compromise or inclusion in an automated botnet only a matter of time.
 
-Here is an exhaustive, production-grade 7-step checklist to turn your freshly deployed Linux VPS (Ubuntu / Debian / AlmaLinux) into an impenetrable fortress before running a single application.
+Here is an exhaustive, production-grade 7-step checklist to turn your freshly deployed Linux VPS into an impenetrable fortress before running a single application.
+
+> **Distribution Note:** All commands below have been tested and provided for both **Debian / Ubuntu** and enterprise RHEL-compatible distributions (**AlmaLinux 9 / Rocky Linux 9 / RHEL**).
 
 ![Linux VPS Security Terminal Audit](/assets/img/posts/vps-checklist-terminal.jpg)
-_Fig. 1. Automated security audit results: Ed25519 cryptography, root access disabled, active UFW firewall, and optimized memory swapping_
+_Fig. 1. Automated security audit results: Ed25519 cryptography, root access disabled, active firewall, and optimized memory swapping_
 
 ---
 
 ## Quick Reference Checklist
 
-- [ ] **Step 1**: Complete package updates and enable automated security patches.
-- [ ] **Step 2**: Create a dedicated sudo user and abandon everyday `root` access.
+- [ ] **Step 1**: Complete package updates and enable automated security patches (`unattended-upgrades` or `dnf-automatic`).
+- [ ] **Step 2**: Create a dedicated unprivileged user and grant admin rights (`sudo` or `wheel`).
 - [ ] **Step 3**: Modern SSH hardening: Ed25519 keys, password authentication disabled, direct root login forbidden.
-- [ ] **Step 4**: Configure UFW firewall and neutralize Docker’s default iptables bypass.
+- [ ] **Step 4**: Configure firewall rules (`ufw` or `firewalld`) and neutralize Docker’s default bypass.
 - [ ] **Step 5**: Deploy Fail2ban intrusion prevention against automated brute-force attacks.
 - [ ] **Step 6**: System hygiene: timezone synchronization (NTP) and 2 GB swap with `swappiness=10`.
 - [ ] **Step 7**: Perform an open port socket audit before launching services.
@@ -44,40 +46,60 @@ _Fig. 1. Automated security audit results: Ed25519 cryptography, root access dis
 
 Base OS images provided by hosting providers can sit in cloud repositories for months, often containing unpatched vulnerabilities.
 
-Immediately after logging in for the first time:
-
+### For Ubuntu / Debian:
+Update package lists and upgrade existing software:
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
-To ensure critical security fixes are applied without requiring manual weekly maintenance, configure unattended upgrades:
-
+Install and configure automated security patches:
 ```bash
 sudo apt install unattended-upgrades -y
 sudo dpkg-reconfigure -plow unattended-upgrades
 ```
+This registers an automated daily background service that applies critical security patches without breaking user configurations.
 
-This registers an automated daily systemd timer that installs only official security errata and kernel patches without breaking your third-party dependencies.
+### For AlmaLinux / Rocky Linux:
+Update packages via DNF:
+```bash
+sudo dnf update -y
+```
+
+Install and activate `dnf-automatic`:
+```bash
+sudo dnf install dnf-automatic -y
+
+# Configure automatic security patches:
+sudo sed -i 's/upgrade_type = default/upgrade_type = security/' /etc/dnf/automatic.conf
+sudo sed -i 's/apply_updates = no/apply_updates = yes/' /etc/dnf/automatic.conf
+
+# Enable systemd timer:
+sudo systemctl enable --now dnf-automatic.timer
+```
 
 ---
 
-## Step 2. Create a Dedicated Sudo User
+## Step 2. Create a Dedicated User & Abandon Root
 
 Operating day-to-day as `root` is an operational hazard. A single accidental syntax mistake in a cleanup script or a malicious command executed in an untrusted container can immediately compromise the underlying host kernel.
 
-Create a new unprivileged system user (e.g., `adminuser`):
-
+### For Ubuntu / Debian:
+Create a new unprivileged system user (e.g., `adminuser`) and append them to the `sudo` group:
 ```bash
 adduser adminuser
-```
-
-Provide a strong passphrase. Next, grant administrative privileges by appending the user to the `sudo` group:
-
-```bash
 usermod -aG sudo adminuser
 ```
 
-Verify the setup: switch to your new user with `su - adminuser` and run `sudo whoami`. The output must read `root`.
+### For AlmaLinux / Rocky Linux:
+In the RHEL ecosystem, create the user with `adduser`, assign a password via `passwd`, and grant privileges through the **`wheel`** group:
+```bash
+adduser adminuser
+passwd adminuser
+usermod -aG wheel adminuser
+```
+
+**Verification (Both Systems):**  
+Switch to your new user with `su - adminuser` and run `sudo whoami`. The output must read `root`.
 
 ---
 
@@ -124,27 +146,36 @@ X11Forwarding no
 AllowTcpForwarding yes
 ```
 
-Validate the configuration syntax before restarting the daemon to prevent accidental lockouts:
+Validate the configuration syntax before restarting the daemon:
 
 ```bash
 sudo sshd -t
 ```
 
-If no errors are returned, reload the SSH daemon:
+Reload the SSH daemon:
 
-```bash
-sudo systemctl restart ssh || sudo systemctl restart sshd
-```
+* On **Ubuntu / Debian**:
+  ```bash
+  sudo systemctl restart ssh
+  ```
+* On **AlmaLinux / Rocky Linux**:
+  ```bash
+  sudo systemctl restart sshd
+  ```
+
+> **AlmaLinux / Rocky Linux Tip (SELinux):**  
+> If you decide to change your SSH listening port (e.g., to `2222`), inform SELinux beforehand; otherwise, the daemon will fail to bind:  
+> `sudo semanage port -a -t ssh_port_t -p tcp 2222`
 
 > **CRITICAL RULE:** Do NOT close your current terminal session yet! Open a new, separate terminal window on your local machine and verify that you can connect using your key: `ssh adminuser@YOUR_SERVER_IP`. Confirm that login succeeds without prompting for a password.
 
 ---
 
-## Step 4. Configure UFW & Fix the "Docker Firewall Trap"
+## Step 4. Configure Firewall: UFW vs. Firewalld
 
 A host firewall should enforce a strict default-deny policy, exposing only ports required for your services.
 
-### Baseline UFW Configuration:
+### Option A: For Ubuntu / Debian (via UFW)
 
 ```bash
 # Deny incoming connections by default
@@ -163,13 +194,36 @@ sudo ufw allow 443/tcp comment 'HTTPS'
 # Enable firewall
 sudo ufw enable
 ```
-
 Check status: `sudo ufw status verbose`.
 
-### ⚠️ The Docker Firewall Trap: Docker Bypasses UFW!
-When you deploy applications using Docker and map ports (e.g., `-p 8080:8080`), **Docker modifies host iptables PREROUTING chains directly, completely bypassing UFW rules!**
+---
 
-This means containerized ports become reachable by the entire public internet, even if UFW is set to block them.
+### Option B: For AlmaLinux / Rocky Linux (via Firewalld)
+
+AlmaLinux and Rocky Linux employ **firewalld** out of the box:
+
+```bash
+# Ensure firewalld is running and enabled
+sudo systemctl enable --now firewalld
+
+# Allow essential services
+sudo firewall-cmd --permanent --add-service=ssh
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --permanent --add-service=https
+
+# Reload configuration
+sudo firewall-cmd --reload
+
+# Inspect active zone
+sudo firewall-cmd --list-all
+```
+
+---
+
+### ⚠️ Universal Pitfall: Docker Bypasses the Host Firewall!
+When you deploy applications using Docker and map ports (e.g., `-p 8080:8080`), **Docker modifies host iptables PREROUTING chains directly, completely bypassing both UFW and Firewalld!**
+
+This means containerized ports become reachable by the entire public internet, even if your firewall is configured to drop them.
 
 **How to prevent this:**
 1. Bind container ports strictly to the local loopback interface (`127.0.0.1`) when routing traffic through a reverse proxy:
@@ -177,7 +231,7 @@ This means containerized ports become reachable by the entire public internet, e
    ports:
      - "127.0.0.1:8080:8080"
    ```
-2. Or deploy [ufw-docker](https://github.com/chaifeng/ufw-docker) to enforce UFW filtering rules across all Docker bridge networks.
+2. Or on UFW systems, deploy [ufw-docker](https://github.com/chaifeng/ufw-docker) to enforce host filtering across Docker bridge networks.
 
 ---
 
@@ -185,12 +239,22 @@ This means containerized ports become reachable by the entire public internet, e
 
 Even with password authentication disabled, botnets will continuously flood your SSH port with connection attempts, filling log files and consuming CPU cycles.
 
-**Fail2ban** monitors system authentication journals and automatically drops malicious IP addresses at the packet-filter layer:
+**Fail2ban** monitors system authentication journals and automatically drops malicious IP addresses at the packet-filter layer.
 
-```bash
-sudo apt install fail2ban -y
-```
+### Installation:
 
+* On **Ubuntu / Debian**:
+  ```bash
+  sudo apt install fail2ban -y
+  ```
+* On **AlmaLinux / Rocky Linux**:  
+  Fail2ban resides in the EPEL repository:
+  ```bash
+  sudo dnf install epel-release -y
+  sudo dnf install fail2ban fail2ban-firewalld -y
+  ```
+
+### Configuration:
 Create a persistent local configuration:
 
 ```bash
@@ -226,7 +290,7 @@ View active bans anytime with: `sudo fail2ban-client status sshd`.
 
 Accurate server clocks are mandatory for log forensic analysis, cron schedules, and Let’s Encrypt TLS certificate handshakes.
 
-### 1. Set System Timezone & Enable NTP:
+### 1. Set System Timezone & Enable NTP (Identical across distros):
 ```bash
 sudo timedatectl set-timezone Europe/Kyiv
 sudo timedatectl set-ntp on
@@ -273,15 +337,15 @@ Before opening your server to production traffic, verify which services are acti
 sudo ss -tulpn
 ```
 
-Confirm that no unauthorized daemons are listening on wildcard addresses (`0.0.0.0` or `:::`) beyond your verified SSH service and web proxy.
+Confirm that no unauthorized daemons are listening on wildcard addresses (`0.0.0.0` or `:::`) beyond your verified SSH service and configured firewall.
 
 ---
 
 ## Conclusion: Production-Ready Security in 5 Minutes
 
-By systematically walking through these 7 steps, you guarantee:
+By systematically walking through these 7 steps across either Ubuntu/Debian or AlmaLinux/Rocky Linux, you guarantee:
 1. **Zero Brute-Force Exposure**: Passwords disabled in favor of cryptographic Ed25519 keys.
-2. **Defended Perimeter**: Default-deny firewall active with Docker container isolation.
+2. **Defended Perimeter**: Default-deny firewall active (`ufw` or `firewalld`) with Docker container isolation.
 3. **Resource Stability**: Swap protection prevents OOM crashes on cost-effective instances.
 4. **Automated Maintenance**: Kernel vulnerabilities patched automatically in the background.
 
