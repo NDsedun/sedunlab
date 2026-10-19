@@ -8,7 +8,7 @@ sitemap: false
 <div style="display: flex; align-items: center; gap: 18px; margin-bottom: 1.5rem;">
   <img src="/assets/img/alerts-widget-icon.png" alt="Ukraine Alerts Widget Icon" width="76" height="76" style="border-radius: 16px;" />
   <div>
-    <h2 style="margin: 0 0 4px 0; border: none; padding: 0;">Ukraine Alerts Widget</h2>
+    <h2 style="margin: 0 0 4px 0; border: none; padding: 0;">Ukraine Alerts Widget <span style="font-size: 0.85rem; opacity: 0.65; font-weight: normal;">v1.1</span></h2>
     <p style="margin: 0; opacity: 0.8;">Легкий настільний віджет живої мапи повітряних тривог України для Windows 10 / 11 • <strong>Created by ND Sedun</strong></p>
   </div>
 </div>
@@ -17,12 +17,17 @@ sitemap: false
 
 ### Основні можливості
 
+- **🔔 Сповіщення про тривогу та відбій для обраного району:**
+  - Можливість обрати будь-яку **область** та конкретний **район** (або всю область).
+  - Спливаючі повідомлення Windows 11 у правому нижньому куті екрана при оголошенні тривоги або відбою.
+  - Опціональний **м'який звуковий сигнал** (приємний мелодійний дзвіночок замість сирени) + кнопки миттєвого тестування у налаштуваннях.
+- **🛸 Відображення руху ворожих повітряних цілей (Увімк. / Вимк.):**
+  - Кнопка **«🛸 Цілі»** вмикає або вимикає відображення зафіксованих повітряних об'єктів (БпЛА Shahed, реактивні БпЛА, ракети, КАБ) із векторами напрямку їхнього руху та деталями при наведенні курсора.
 - **Два режими мапи:** перемикання між **областями (27 регіонів)** та окремими **районами (139 районів)** в один клік.
 - **Статуси в реальному часі:**
   - 🔴 **Повна тривога** — тривога оголошена в усій області.
   - 🟠 **Часткова тривога** — тривога лише в окремих районах області.
   - 🟢 **Спокійно** — відсутність активних тривог.
-- **Деталі при наведенні курсора:** назва області або району, тривалість поточної тривоги та список активних районів.
 - **Налаштування вигляду:**
   - Перемикач **«Фон»** — від напівпрозорої картки у стилі Windows 11 до повністю прозорого фону (лише контури мапи на шпалерах).
   - Перемикач **«Назви»** — увімкнення/вимкнення підписів областей.
@@ -47,7 +52,7 @@ sitemap: false
   <div style="border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 12px; padding: 18px; background: rgba(15, 23, 42, 0.2);">
     <h4 style="margin-top: 0;">⚡ Компактна версія</h4>
     <p style="font-size: 0.92rem; opacity: 0.85;">Полегшений єдиний файл для комп'ютерів, де вже встановлено середовище <strong>.NET 10 Desktop Runtime</strong>.</p>
-    <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 14px;">Розмір: ~903 КБ • Один файл</p>
+    <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 14px;">Розмір: ~915 КБ • Один файл</p>
     <a href="/downloads/UkraineAlertsWidget.exe" download style="display: inline-block; background: #334155; color: #ffffff; padding: 9px 18px; border-radius: 8px; font-weight: 600; text-decoration: none;">⬇ Завантажити Compact (.exe)</a>
   </div>
 
