@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Мапа повітряних тривог України — Віджет для Windows 11 та Amazfit T-Rex 2
+title: Мапа повітряних тривог України — Віджет для Windows 11 та годинників Amazfit
 permalink: /alerts-widget/
 sitemap: false
 ---
@@ -9,7 +9,7 @@ sitemap: false
   <img src="/assets/img/alerts-widget-icon.png" alt="Ukraine Alerts Widget Icon" width="76" height="76" style="border-radius: 16px;" />
   <div>
     <h2 style="margin: 0 0 4px 0; border: none; padding: 0;">Ukraine Alerts Widget <span style="font-size: 0.85rem; opacity: 0.65; font-weight: normal;">v1.2</span></h2>
-    <p style="margin: 0; opacity: 0.8;">Настільний віджет для Windows 10 / 11 та застосунок для смарт-годинника Amazfit T-Rex 2 • <strong>Created by ND Sedun</strong></p>
+    <p style="margin: 0; opacity: 0.8;">Настільний віджет для Windows 10 / 11 та застосунок для смарт-годинників Amazfit T-Rex 2 / Amazfit Balance • <strong>Created by ND Sedun</strong></p>
   </div>
 </div>
 
@@ -61,11 +61,11 @@ sitemap: false
 
 ---
 
-### ⌚ Версія для смарт-годинника Amazfit T-Rex 2 (Zepp OS)
+### ⌚ Версія для смарт-годинників Amazfit T-Rex 2 та Amazfit Balance (Zepp OS)
 
-Спеціальний тактичний застосунок **«Тривога UA»** для круглого AMOLED-дисплея **Amazfit T-Rex 2 (`454×454`)** із миттєвою візуальною індикацією та вібро-алярмом на зап'ясті:
+Спеціальний тактичний застосунок **«Тривога UA»** для круглих AMOLED-дисплеїв **Amazfit T-Rex 2 (`454×454`)** та **Amazfit Balance (`480×480`)** із миттєвою візуальною індикацією та вібро-алярмом на зап'ясті:
 
-![Amazfit T-Rex 2 Preview](/assets/img/trex2-preview.png)
+![Amazfit Watch Preview](/assets/img/trex2-preview.png)
 
 - **🟢 Зелений / 🔴 Червоний статус з першого погляду:** при запуску зовнішнє кільце безеля та верхній банер одразу світяться **смарагдово-зеленим (`СПОКІЙНО`)** або **яскраво-червоним (`! ТРИВОГА !`)** для вашого регіону (за замовчуванням — **`м. Київ`**).
 - **🗺️ Жива мапа України на екрані годинника:** усі 27 регіонів відображаються у реальному часі (зелений — спокійно, помаранчевий — часткова тривога в області, червоний — повна тривога).
@@ -73,21 +73,29 @@ sitemap: false
 - **⏰ Автоматична перевірка кожні 5 хв (`Авто: 5хв`):** увімкніть кнопку **«Авто: 5хв»** внизу екрана, щоб годинник сам періодично прокидався, перевіряв статус по Bluetooth через телефон і будив вас вібрацією у разі тривоги.
 - **📍 Перемикання регіону:** тапніть по назві `< м. Київ >` угорі екрана, щоб перемкнути моніторинг на Київську область або будь-яку іншу область України (вибір зберігається в пам'яті годинника).
 
-<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center; border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 12px; padding: 20px; background: rgba(15, 23, 42, 0.35); margin: 1.5rem 0;">
-  <div style="flex: 0 0 160px; text-align: center;">
-    <img src="/assets/img/trex2-qr.png" alt="Zepp App QR Code" width="150" height="150" style="border-radius: 10px; background: #fff; padding: 6px;" />
-    <div style="font-size: 0.78rem; opacity: 0.75; margin-top: 6px;">Сканувати в Zepp App</div>
-  </div>
-  <div style="flex: 1; min-width: 240px;">
-    <h4 style="margin-top: 0;">Встановлення на Amazfit T-Rex 2 за 1 хвилину</h4>
-    <ol style="font-size: 0.92rem; line-height: 1.55; padding-left: 1.2rem; margin-bottom: 14px;">
-      <li>У додатку <strong>Zepp</strong> на телефоні перейдіть у <strong>Профіль → Налаштування → Про програму</strong> та 7 разів торкніться логотипу Zepp, щоб увімкнути <strong>Режим розробника (Developer Mode)</strong>.</li>
-      <li>Перейдіть у <strong>Пристрій (Amazfit T-Rex 2) → Загальні → Режим розробника → Mini Program</strong>.</li>
-      <li>Натисніть кнопку <strong>«+» (Scan)</strong> у правому верхньому куті та відскануйте цей QR-код — застосунок <strong>«Тривога UA»</strong> автоматично встановиться на ваш годинник!</li>
-    </ol>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-      <a href="/downloads/UkraineAlerts_TRex2.zpk" download style="display: inline-block; background: #10b981; color: #06281e; padding: 8px 15px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 0.9rem;">⬇ Пакет для T-Rex 2 (.zpk)</a>
-      <a href="/downloads/UkraineAlerts_TRex2.zab" download style="display: inline-block; background: #334155; color: #ffffff; padding: 8px 15px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 0.9rem;">⬇ Повний бандл (.zab)</a>
+<div style="border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 12px; padding: 20px; background: rgba(15, 23, 42, 0.35); margin: 1.5rem 0;">
+  <h4 style="margin-top: 0;">Встановлення через QR-код у додатку Zepp (за 1 хвилину)</h4>
+  <ol style="font-size: 0.92rem; line-height: 1.55; padding-left: 1.2rem; margin-bottom: 18px;">
+    <li>У додатку <strong>Zepp</strong> на телефоні перейдіть у <strong>Профіль → Налаштування → Про програму</strong> та 7 разів торкніться логотипу Zepp, щоб увімкнути <strong>Режим розробника (Developer Mode)</strong>.</li>
+    <li>Перейдіть у <strong>Пристрій → Загальні → Режим розробника → Mini Program</strong>.</li>
+    <li>Натисніть кнопку <strong>«+» (Scan)</strong> у правому верхньому куті та відскануйте QR-код для вашої моделі годинника:</li>
+  </ol>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px;">
+    <div style="border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 10px; padding: 14px; text-align: center; background: rgba(15, 23, 42, 0.4);">
+      <div style="font-weight: 700; margin-bottom: 8px;">⌚ Amazfit T-Rex 2 (454×454)</div>
+      <img src="/assets/img/trex2-qr.png" alt="QR Amazfit T-Rex 2" width="145" height="145" style="border-radius: 8px; background: #fff; padding: 6px; margin: 0 auto 10px auto; display: block;" />
+      <a href="/downloads/UkraineAlerts_TRex2.zpk" download style="display: inline-block; background: #10b981; color: #06281e; padding: 7px 14px; border-radius: 7px; font-weight: 700; text-decoration: none; font-size: 0.86rem;">⬇ Завантажити T-Rex 2 (.zpk)</a>
     </div>
+
+    <div style="border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 10px; padding: 14px; text-align: center; background: rgba(15, 23, 42, 0.4);">
+      <div style="font-weight: 700; margin-bottom: 8px;">⌚ Amazfit Balance (480×480)</div>
+      <img src="/assets/img/balance-qr.png" alt="QR Amazfit Balance" width="145" height="145" style="border-radius: 8px; background: #fff; padding: 6px; margin: 0 auto 10px auto; display: block;" />
+      <a href="/downloads/UkraineAlerts_Balance.zpk" download style="display: inline-block; background: #0284c7; color: #ffffff; padding: 7px 14px; border-radius: 7px; font-weight: 700; text-decoration: none; font-size: 0.86rem;">⬇ Завантажити Balance (.zpk)</a>
+    </div>
+  </div>
+
+  <div style="margin-top: 14px; text-align: center;">
+    <a href="/downloads/UkraineAlerts_TRex2.zab" download style="display: inline-block; background: #334155; color: #ffffff; padding: 7px 16px; border-radius: 7px; font-weight: 600; text-decoration: none; font-size: 0.85rem;">⬇ Універсальний бандл для обох моделей (.zab)</a>
   </div>
 </div>
