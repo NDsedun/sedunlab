@@ -6,6 +6,8 @@ tags: [linux, cli, terminal, devops, rust, btop, eza, bat, zoxide, fastfetch]
 image:
   path: /assets/img/posts/modern-cli-tools-cover.jpg
   alt: Modern Command Line CLI Replacements for Classic Linux Tools
+lang: en
+hidden: true
 alt_lang_url: /posts/modern-cli-tools-linux-upgrade/
 ---
 

@@ -6,6 +6,8 @@ tags: [devops, linux, postgresql, timezones, cron, python, bugs, sysadmin, backe
 image:
   path: /assets/img/posts/dst-bugs-cover.jpg
   alt: Daylight Saving Time transition and software bugs in IT
+lang: en
+hidden: true
 alt_lang_url: /posts/daylight-saving-time-bugs-devops-guide/
 ---
 

@@ -6,6 +6,8 @@ tags: [ssh, fido2, passkeys, security-keys, yubikey, openssh, linux, vps, devops
 image:
   path: /assets/img/posts/fido2-ssh-cover.jpg
   alt: FIDO2 and Hardware Security Keys in OpenSSH
+lang: en
+hidden: true
 alt_lang_url: /posts/fido2-ssh-passkeys-hardware-security-keys/
 ---
 

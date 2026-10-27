@@ -6,6 +6,8 @@ tags: [terminal, oh-my-posh, powershell, zsh, bash, windows-terminal, linux, mac
 image:
   path: /assets/img/posts/oh-my-posh-cover.jpg
   alt: Aesthetic Terminal Customization with Oh My Posh
+lang: en
+hidden: true
 alt_lang_url: /posts/terminal-styling-oh-my-posh-guide/
 ---
 

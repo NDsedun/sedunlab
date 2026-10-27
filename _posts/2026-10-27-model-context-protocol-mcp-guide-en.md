@@ -6,6 +6,8 @@ tags: [ai, mcp, model-context-protocol, anthropic, llm, devops, python, programm
 image:
   path: /assets/img/posts/mcp-protocol-cover.jpg
   alt: Model Context Protocol (MCP) connecting AI to systems
+lang: en
+hidden: true
 alt_lang_url: /posts/model-context-protocol-mcp-guide/
 ---
 
