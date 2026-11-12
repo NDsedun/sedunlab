@@ -47,7 +47,9 @@ window.renderBookmarksPage = function() {
 
   if (!grid || !emptyState) return;
 
-  const isEn = (document.documentElement.lang || '').startsWith('en');
+  const isEn = (typeof window.isSedunlabEnglish === 'function')
+    ? window.isSedunlabEnglish()
+    : (window.location.pathname.startsWith('/en/') || sessionStorage.getItem('lang-override') === 'en');
   if (isEn) {
     const dt = document.querySelector('.dynamic-title');
     if (dt) dt.textContent = 'Bookmarks';

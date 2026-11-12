@@ -33,8 +33,12 @@
             {% capture tab_name %}{{ tab.url | split: '/' }}{% endcapture %}
 
             <span>
-              {% if tab_name == 'bookmarks' and include.lang == 'en' %}
-                BOOKMARKS
+              {% if tab_name == 'bookmarks' %}
+                {% if page.url contains '/en/' %}
+                  BOOKMARKS
+                {% else %}
+                  ОБРАНЕ
+                {% endif %}
               {% else %}
                 {{ site.data.locales[include.lang].tabs.[tab_name] | default: tab.title | upcase }}
               {% endif %}
