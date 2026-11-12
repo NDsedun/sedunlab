@@ -1,0 +1,148 @@
+---
+layout: page
+---
+
+{% include lang.html %}
+
+<div id="bookmarks-wrapper" class="pb-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 pb-3 border-bottom">
+    <p class="text-muted mb-0" id="bookmarks-desc" style="font-size: 0.95rem;">
+      Статті, збережені у вашому браузері. Читайте пізніше або використовуйте для швидкого доступу.
+    </p>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge bg-secondary rounded-pill" id="bm-count-badge">0</span>
+      <button type="button" id="bm-clear-btn" class="btn btn-outline-danger btn-sm rounded-pill d-none" onclick="window.clearAllBookmarks()">
+        <i class="fas fa-trash-alt me-1"></i>Очистити все
+      </button>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div id="bookmarks-empty" class="text-center py-5 d-none">
+    <div class="mb-3 text-muted" style="font-size: 3.5rem; opacity: 0.35;">
+      <i class="far fa-bookmark"></i>
+    </div>
+    <h2 class="h4 fw-bold">У вас поки немає збережених статей</h2>
+    <p class="text-muted mx-auto mb-4" style="max-width: 480px; font-size: 0.95rem;">
+      Натискайте на кнопку <span class="badge bg-primary text-white"><i class="far fa-bookmark me-1"></i>В обране</span> на будь-якій статті, щоб зберегти її тут.
+    </p>
+    <a href="{{ '/' | relative_url }}" class="btn btn-primary rounded-pill px-4">
+      <i class="fas fa-newspaper me-1"></i>Переглянути статті
+    </a>
+  </div>
+
+  <!-- Bookmarks Grid -->
+  <div id="bookmarks-grid" class="row g-4">
+    <!-- Populated dynamically via JavaScript -->
+  </div>
+</div>
+
+<script>
+window.renderBookmarksPage = function() {
+  const grid = document.getElementById('bookmarks-grid');
+  const emptyState = document.getElementById('bookmarks-empty');
+  const countBadge = document.getElementById('bm-count-badge');
+  const clearBtn = document.getElementById('bm-clear-btn');
+  const desc = document.getElementById('bookmarks-desc');
+
+  if (!grid || !emptyState) return;
+
+  const isEn = (document.documentElement.lang || '').startsWith('en');
+  if (isEn) {
+    const dt = document.querySelector('.dynamic-title');
+    if (dt) dt.textContent = 'Bookmarks';
+    if (desc) desc.textContent = 'Articles saved in your browser for offline or later reading.';
+    const emptyTitle = emptyState.querySelector('h2');
+    if (emptyTitle) emptyTitle.textContent = 'No bookmarked articles yet';
+    const emptyDesc = emptyState.querySelector('p');
+    if (emptyDesc) emptyDesc.innerHTML = 'Click <span class="badge bg-primary text-white"><i class="far fa-bookmark me-1"></i>Bookmark</span> on any article to save it here.';
+    const emptyBtn = emptyState.querySelector('a');
+    if (emptyBtn) emptyBtn.innerHTML = '<i class="fas fa-newspaper me-1"></i>Browse articles';
+    if (clearBtn) clearBtn.innerHTML = '<i class="fas fa-trash-alt me-1"></i>Clear all';
+  }
+
+  const bookmarks = (typeof window.getSedunlabBookmarks === 'function') 
+    ? window.getSedunlabBookmarks() 
+    : [];
+
+  if (countBadge) {
+    countBadge.textContent = bookmarks.length + (isEn ? ' saved' : ' збережено');
+  }
+
+  if (bookmarks.length === 0) {
+    grid.innerHTML = '';
+    emptyState.classList.remove('d-none');
+    if (clearBtn) clearBtn.classList.add('d-none');
+    return;
+  }
+
+  emptyState.classList.add('d-none');
+  if (clearBtn) clearBtn.classList.remove('d-none');
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  grid.innerHTML = bookmarks.map(function(item) {
+    const escapedUrl = escapeHtml(item.url);
+    const escapedTitle = escapeHtml(item.title);
+    const escapedDate = escapeHtml(item.date);
+    const escapedCategories = escapeHtml(item.categories);
+    const escapedDesc = escapeHtml(item.description);
+    const imgHtml = item.image ? `
+      <a href="${escapedUrl}" class="post-card-img-wrapper overflow-hidden rounded-top d-block text-decoration-none" style="aspect-ratio: 16/9; max-height: 200px;">
+        <img src="${escapeHtml(item.image)}" alt="${escapedTitle}" class="w-100 h-100" style="object-fit: cover;" onerror="this.parentElement.remove()">
+      </a>
+    ` : '';
+
+    return `
+      <div class="col-12 col-md-6 bookmark-item-col" data-url="${escapedUrl}">
+        <article class="card h-100 post-card border-0 shadow-sm d-flex flex-column">
+          ${imgHtml}
+          <div class="card-body d-flex flex-column p-4 flex-grow-1">
+            <div class="post-meta-top mb-2 d-flex align-items-center justify-content-between text-muted fs-7">
+              <div>
+                ${escapedDate ? `<i class="far fa-calendar fa-fw me-1"></i><span>${escapedDate}</span>` : ''}
+              </div>
+              ${escapedCategories ? `
+                <div>
+                  <i class="far fa-folder-open fa-fw me-1"></i>
+                  <span>${escapedCategories}</span>
+                </div>
+              ` : ''}
+            </div>
+            <h3 class="card-title h5 fw-bold line-clamp-2 my-2">
+              <a href="${escapedUrl}" class="text-decoration-none text-reset">${escapedTitle}</a>
+            </h3>
+            ${escapedDesc ? `
+              <div class="card-text content mt-0 mb-3 text-muted line-clamp-3 fs-7">
+                <p>${escapedDesc}</p>
+              </div>
+            ` : ''}
+            <div class="post-meta mt-auto pt-3 border-top d-flex align-items-center justify-content-between">
+              <a href="${escapedUrl}" class="btn btn-sm btn-outline-primary rounded-pill fw-semibold">
+                ${isEn ? 'Read &rarr;' : 'Читати &rarr;'}
+              </a>
+              <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" data-url="${escapedUrl}" onclick="window.removeBookmark(this.getAttribute('data-url'))">
+                <i class="fas fa-trash-alt me-1"></i>${isEn ? 'Remove' : 'Видалити'}
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+    `;
+  }).join('');
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof window.renderBookmarksPage === 'function') {
+    window.renderBookmarksPage();
+  }
+});
+</script>
