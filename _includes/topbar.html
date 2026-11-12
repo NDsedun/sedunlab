@@ -74,6 +74,18 @@
       {{- site.data.locales[include.lang].search.cancel -}}
     </button>
 
+    <!-- Shortcuts Trigger -->
+    <button
+      type="button"
+      class="btn btn-link px-2 d-none d-sm-inline-flex align-items-center text-muted"
+      onclick="window.toggleShortcutsModal()"
+      title="Клавіатурні шорткати (?)"
+      aria-label="Клавіатурні шорткати"
+      style="font-size: 0.95rem;"
+    >
+      <i class="fas fa-keyboard"></i>
+    </button>
+
     <!-- Language Switcher -->
     <div id="language-switcher" class="d-flex align-items-center ms-3">
       {% if page.url contains '/en/' %}
