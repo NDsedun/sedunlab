@@ -2,7 +2,7 @@
 
 <aside aria-label="Sidebar" id="sidebar" class="d-flex flex-column align-items-end">
   <!-- Homelab VPS Status Widget (Very Top in Left Corner) -->
-  <div class="homelab-status-widget w-100 px-3 pt-3 pb-2">
+  <div class="homelab-status-widget w-100 px-3 pb-2" style="margin-top: 1.65rem;">
     <div class="p-2 rounded-3 border" style="background: rgba(127,127,127,0.06); border-color: rgba(127,127,127,0.18) !important;">
       <div class="d-flex align-items-center justify-content-between mb-1">
         <span class="d-flex align-items-center gap-2 fw-bold text-truncate" style="font-size: 0.72rem; letter-spacing: 0.5px;">
@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <header class="profile-wrapper">
+  <header class="profile-wrapper" style="margin-top: 1.5rem !important;">
     <a href="{{ '/' | relative_url }}" id="avatar" class="rounded-circle">
       {%- if site.avatar != empty and site.avatar -%}
         {%- capture avatar_url -%}
