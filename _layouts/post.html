@@ -13,8 +13,6 @@ script_includes:
 
 {% include toc-status.html %}
 
-<div id="reading-progress-bar" style="position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, #3b82f6, #06b6d4); width: 0%; z-index: 99999; transition: width 0.08s linear; pointer-events: none;"></div>
-
 <article class="px-1" data-toc="{{ enable_toc }}">
   <header>
     <h1 data-toc-skip>{{ page.title }}</h1>
@@ -264,27 +262,6 @@ script_includes:
 </article>
 
 <script>
-/* Reading Progress Bar */
-(function() {
-  function updateProgress() {
-    const bar = document.getElementById('reading-progress-bar');
-    if (!bar) return;
-    const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    const scrollHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
-    const clientHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-    const docHeight = scrollHeight - clientHeight;
-    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    bar.style.width = Math.min(100, Math.max(0, progress)) + '%';
-  }
-  window.addEventListener('scroll', updateProgress, { passive: true });
-  window.addEventListener('resize', updateProgress, { passive: true });
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', updateProgress);
-  } else {
-    updateProgress();
-  }
-})();
-
 /* Web Speech API Text-to-Speech (Audio version) */
 (function() {
   if (!('speechSynthesis' in window)) {
