@@ -104,7 +104,7 @@ We have introduced a dedicated [**TOOLS**](/tools/) page in the primary navigati
 
 ## 7. 🟢 Live Homelab VPS Status Indicator
 
-Because SedunLab is itself a self-hosted platform running on real hardware, the sidebar now features an integrated status widget:
+Because SedunLab is itself a self-hosted platform running on real hardware, the very top of the left sidebar (in the top-left corner above the profile header) now features an integrated status widget:
 * **State:** `🟢 ONLINE` accompanied by a pulsing emerald status indicator.
 * **Architecture:** `AlmaLinux 9 • CyberPanel • Nginx`.
 
