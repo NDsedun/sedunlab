@@ -1,6 +1,6 @@
 ---
 title: "Major SedunLab Platform Update: Bookmarks, Audio Reader, Hotkeys, Clean PDF Export, and Interactive IT-Toolbox"
-date: 2026-11-12 16:30:00 +0200
+date: 2026-11-12 16:35:00 +0200
 categories: [blog, updates]
 tags: [sedunlab, changelog, web-dev, tools, self-hosted, jekyll, devops]
 image:

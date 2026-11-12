@@ -1,6 +1,6 @@
 ---
 title: "Local AI Coding Assistant in Your Terminal: Aider + Ollama with Zero Cloud Subscriptions"
-date: 2026-11-12 14:30:00 +0200
+date: 2026-11-12 14:35:00 +0200
 categories: [ai, devops]
 tags: [ai, ollama, aider, llm, coding, python, git, qwen, deepseek, local-ai, terminal]
 image:

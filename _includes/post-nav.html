@@ -1,0 +1,60 @@
+<!-- Navigation buttons at the bottom of the post. -->
+
+{% assign is_en = false %}
+{% if page.url contains '/en/' or page.lang == 'en' %}
+  {% assign is_en = true %}
+{% endif %}
+
+{% if is_en %}
+  {% assign lang_posts = site.posts | where: 'lang', 'en' %}
+{% else %}
+  {% assign lang_posts = site.posts | where_exp: 'item', 'item.lang != "en"' %}
+{% endif %}
+
+{% assign prev_post = nil %}
+{% assign next_post = nil %}
+
+{% for p in lang_posts %}
+  {% if p.url == page.url %}
+    {% assign post_index = forloop.index0 %}
+    {% if post_index > 0 %}
+      {% assign prev_index = post_index | minus: 1 %}
+      {% assign next_post = lang_posts[prev_index] %}
+    {% endif %}
+    {% assign next_index = post_index | plus: 1 %}
+    {% if next_index < lang_posts.size %}
+      {% assign prev_post = lang_posts[next_index] %}
+    {% endif %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+<nav class="post-navigation d-flex justify-content-between" aria-label="Post Navigation">
+  {% if prev_post %}
+    <a
+      href="{{ prev_post.url | relative_url }}"
+      class="btn btn-outline-primary post-nav-prev"
+      aria-label="{% if is_en %}Older post{% else %}Попередня публікація{% endif %}"
+    >
+      <p>{{ prev_post.title }}</p>
+    </a>
+  {% else %}
+    <div class="btn btn-outline-primary disabled post-nav-prev" aria-label="{% if is_en %}Older post{% else %}Попередня публікація{% endif %}">
+      <p>-</p>
+    </div>
+  {% endif %}
+
+  {% if next_post %}
+    <a
+      href="{{ next_post.url | relative_url }}"
+      class="btn btn-outline-primary post-nav-next"
+      aria-label="{% if is_en %}Newer post{% else %}Наступна публікація{% endif %}"
+    >
+      <p>{{ next_post.title }}</p>
+    </a>
+  {% else %}
+    <div class="btn btn-outline-primary disabled post-nav-next" aria-label="{% if is_en %}Newer post{% else %}Наступна публікація{% endif %}">
+      <p>-</p>
+    </div>
+  {% endif %}
+</nav>

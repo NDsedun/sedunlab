@@ -244,25 +244,23 @@
     /* Next post / Newer: 'k' */
     if (key === 'k') {
       e.preventDefault();
-      const nextPost = document.querySelector('.post-navigation a[aria-label="Newer"]');
-      const nextPage = document.querySelector('.pagination .page-item:not(.disabled) a[aria-label="next-page"]');
-      if (nextPost && nextPost.href) {
-        window.location.href = nextPost.href;
-      } else if (nextPage && nextPage.href) {
-        window.location.href = nextPage.href;
-      } else {
-        const cards = Array.from(document.querySelectorAll('#post-list article, .post-preview, #post-list .card'));
-        if (cards.length > 0) {
-          const scrollPos = window.scrollY + 80;
-          const nextCard = cards.find(c => c.offsetTop > scrollPos);
-          if (nextCard) {
-            nextCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            return;
+      const postNav = document.querySelector('.post-navigation');
+      if (postNav) {
+        /* Inside an article */
+        const nextPost = postNav.querySelector('a.post-nav-next') || postNav.querySelector('a[aria-label*="Newer"], a[aria-label*="Наступна"]');
+        if (nextPost && nextPost.href) {
+          window.location.href = nextPost.href;
+        } else {
+          if (typeof window.showBookmarkToast === 'function') {
+            const isEn = (typeof window.isSedunlabEnglish === 'function') && window.isSedunlabEnglish();
+            window.showBookmarkToast(isEn ? 'ℹ️ Latest post (no newer)' : 'ℹ️ Найновіша публікація (новішої немає)');
           }
         }
-        if (typeof window.showBookmarkToast === 'function') {
-          const isEn = (typeof window.isSedunlabEnglish === 'function') && window.isSedunlabEnglish();
-          window.showBookmarkToast(isEn ? 'ℹ️ Latest post (no newer)' : 'ℹ️ Найновіша стаття (новішої немає)');
+      } else {
+        /* On list pages / homepage: previous page */
+        const prevPage = document.querySelector('.pagination .page-item:not(.disabled) a[aria-label="previous-page"]');
+        if (prevPage && prevPage.href && !prevPage.href.endsWith('#')) {
+          window.location.href = prevPage.href;
         }
       }
       return;
@@ -271,25 +269,23 @@
     /* Previous post / Older: 'j' */
     if (key === 'j') {
       e.preventDefault();
-      const prevPost = document.querySelector('.post-navigation a[aria-label="Older"]');
-      const prevPage = document.querySelector('.pagination .page-item:not(.disabled) a[aria-label="previous-page"]');
-      if (prevPost && prevPost.href) {
-        window.location.href = prevPost.href;
-      } else if (prevPage && prevPage.href) {
-        window.location.href = prevPage.href;
-      } else {
-        const cards = Array.from(document.querySelectorAll('#post-list article, .post-preview, #post-list .card'));
-        if (cards.length > 0) {
-          const scrollPos = window.scrollY - 80;
-          const prevCard = cards.reverse().find(c => c.offsetTop < scrollPos);
-          if (prevCard) {
-            prevCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            return;
+      const postNav = document.querySelector('.post-navigation');
+      if (postNav) {
+        /* Inside an article */
+        const prevPost = postNav.querySelector('a.post-nav-prev') || postNav.querySelector('a[aria-label*="Older"], a[aria-label*="Попередня"]');
+        if (prevPost && prevPost.href) {
+          window.location.href = prevPost.href;
+        } else {
+          if (typeof window.showBookmarkToast === 'function') {
+            const isEn = (typeof window.isSedunlabEnglish === 'function') && window.isSedunlabEnglish();
+            window.showBookmarkToast(isEn ? 'ℹ️ Oldest post (no older)' : 'ℹ️ Найперша публікація (старішої немає)');
           }
         }
-        if (typeof window.showBookmarkToast === 'function') {
-          const isEn = (typeof window.isSedunlabEnglish === 'function') && window.isSedunlabEnglish();
-          window.showBookmarkToast(isEn ? 'ℹ️ Oldest post (no older)' : 'ℹ️ Найперша стаття (старішої немає)');
+      } else {
+        /* On list pages / homepage: next page */
+        const nextPage = document.querySelector('.pagination .page-item:not(.disabled) a[aria-label="next-page"]');
+        if (nextPage && nextPage.href && !nextPage.href.endsWith('#')) {
+          window.location.href = nextPage.href;
         }
       }
       return;
