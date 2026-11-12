@@ -215,7 +215,7 @@ layout: page
 </div>
 
 <script>
-// Tab Switching
+/* Tab Switching */
 document.querySelectorAll('.tool-tab-btn').forEach(btn => {
   btn.addEventListener('click', function() {
     document.querySelectorAll('.tool-tab-btn').forEach(b => b.classList.remove('active'));
@@ -227,7 +227,7 @@ document.querySelectorAll('.tool-tab-btn').forEach(btn => {
   });
 });
 
-// Copy Helper
+/* Copy Helper */
 function copyToolValue(id, btn) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -239,7 +239,7 @@ function copyToolValue(id, btn) {
   });
 }
 
-// 1. CIDR Functions
+/* 1. CIDR Functions */
 function ipToLong(ip) {
   return ip.split('.').reduce((acc, oct) => (acc << 8) + parseInt(oct, 10), 0) >>> 0;
 }
@@ -276,7 +276,7 @@ function calculateCIDR() {
   document.getElementById('res-wildcard').textContent = longToIp(wildcardLong);
 }
 
-// 2. Cron Functions
+/* 2. Cron Functions */
 function setCron(exp) {
   document.getElementById('cron-input').value = exp;
   explainCron();
@@ -316,7 +316,7 @@ function explainCron() {
   expEl.textContent = explanation;
 }
 
-// 3. Password / Secret Generator
+/* 3. Password / Secret Generator */
 function generatePassword() {
   const len = parseInt(document.getElementById('pwd-length').value, 10);
   const upper = document.getElementById('pwd-upper').checked;
@@ -360,7 +360,7 @@ function generateUUID() {
   });
 }
 
-// 4. Base64 & URL
+/* 4. Base64 & URL */
 function convertBase64(encode) {
   const val = document.getElementById('conv-input').value;
   const out = document.getElementById('conv-output');
@@ -385,7 +385,7 @@ function convertURL(encode) {
   }
 }
 
-// Initialize default values
+/* Initialize default values */
 document.addEventListener('DOMContentLoaded', () => {
   calculateCIDR();
   explainCron();

@@ -264,18 +264,28 @@ script_includes:
 </article>
 
 <script>
-// Reading Progress Bar
+/* Reading Progress Bar */
 (function() {
-  window.addEventListener('scroll', function() {
+  function updateProgress() {
     const bar = document.getElementById('reading-progress-bar');
     if (!bar) return;
-    const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const progress = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+    const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const scrollHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+    const clientHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+    const docHeight = scrollHeight - clientHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
     bar.style.width = Math.min(100, Math.max(0, progress)) + '%';
-  }, { passive: true });
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress, { passive: true });
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateProgress);
+  } else {
+    updateProgress();
+  }
 })();
 
-// Web Speech API Text-to-Speech (Audio version)
+/* Web Speech API Text-to-Speech (Audio version) */
 (function() {
   if (!('speechSynthesis' in window)) {
     const btn = document.getElementById('btn-tts');
@@ -283,18 +293,89 @@ script_includes:
     return;
   }
 
-  let synth = window.speechSynthesis;
-  let utterance = null;
+  const synth = window.speechSynthesis;
   let isPlaying = false;
+  let isPaused = false;
   let currentSpeed = 1.0;
   const speeds = [1.0, 1.25, 1.5, 0.85];
+  let textChunks = [];
+  let chunkIndex = 0;
 
   function getArticleCleanText() {
-    const content = document.querySelector('.content');
+    const content = document.querySelector('.content') || document.querySelector('article');
     if (!content) return '';
     const clone = content.cloneNode(true);
-    clone.querySelectorAll('pre, code, table, svg, figure, figcaption, .post-meta').forEach(el => el.remove());
+    clone.querySelectorAll('pre, code, table, svg, figure, figcaption, .post-meta, .post-tail-wrapper, .btn-bookmark, #btn-tts, #tts-player, script, style').forEach(el => el.remove());
     return clone.innerText.replace(/\s+/g, ' ').trim();
+  }
+
+  function splitIntoChunks(text, maxLen = 180) {
+    const parts = text.match(/[^.!?;:\n]+[.!?;\n]+|[^.!?;:\n]+$/g) || [text];
+    const chunks = [];
+    let cur = '';
+    for (let i = 0; i < parts.length; i++) {
+      const p = parts[i].trim();
+      if (!p) continue;
+      if ((cur + ' ' + p).length > maxLen) {
+        if (cur) chunks.push(cur.trim());
+        cur = p;
+      } else {
+        cur = cur ? cur + ' ' + p : p;
+      }
+    }
+    if (cur) chunks.push(cur.trim());
+    return chunks;
+  }
+
+  function getTargetVoice(isEn) {
+    const voices = synth.getVoices() || [];
+    const prefix = isEn ? 'en' : 'uk';
+    let match = voices.find(v => v.lang && v.lang.toLowerCase().replace('_', '-').startsWith(prefix));
+    if (!match && !isEn) {
+      match = voices.find(v => v.default) || voices[0];
+    }
+    return match;
+  }
+
+  function speakNextChunk() {
+    if (!isPlaying || chunkIndex >= textChunks.length) {
+      window.stopTTS();
+      return;
+    }
+
+    const chunkText = textChunks[chunkIndex];
+    const utterance = new SpeechSynthesisUtterance(chunkText);
+    const isEn = (typeof window.isSedunlabEnglish === 'function') 
+      ? window.isSedunlabEnglish() 
+      : (window.location.pathname.startsWith('/en/') || window.location.pathname.includes('-en'));
+    
+    utterance.lang = isEn ? 'en-US' : 'uk-UA';
+    utterance.rate = currentSpeed;
+    const voice = getTargetVoice(isEn);
+    if (voice) {
+      utterance.voice = voice;
+    }
+
+    utterance.onend = function() {
+      if (isPlaying) {
+        chunkIndex++;
+        speakNextChunk();
+      }
+    };
+
+    utterance.onerror = function(e) {
+      console.warn('TTS utterance error:', e);
+      if (isPlaying) {
+        chunkIndex++;
+        if (chunkIndex < textChunks.length) {
+          speakNextChunk();
+        } else {
+          window.stopTTS();
+        }
+      }
+    };
+
+    synth.speak(utterance);
   }
 
   window.toggleTTS = function() {
@@ -304,43 +385,44 @@ script_includes:
     }
 
     const text = getArticleCleanText();
-    if (!text) return;
+    if (!text) {
+      alert('Текст статті не знайдено');
+      return;
+    }
 
     synth.cancel();
-    utterance = new SpeechSynthesisUtterance(text);
-    const isEn = (typeof window.isSedunlabEnglish === 'function') 
-      ? window.isSedunlabEnglish() 
-      : window.location.pathname.includes('-en');
-    utterance.lang = isEn ? 'en-US' : 'uk-UA';
-    utterance.rate = currentSpeed;
+    textChunks = splitIntoChunks(text);
+    if (!textChunks.length) return;
 
-    utterance.onend = function() {
-      window.stopTTS();
-    };
-    utterance.onerror = function() {
-      window.stopTTS();
-    };
-
-    synth.speak(utterance);
+    chunkIndex = 0;
     isPlaying = true;
+    isPaused = false;
 
     const ttsBtn = document.getElementById('btn-tts');
     const player = document.getElementById('tts-player');
+    const playPauseIcon = document.querySelector('#tts-play-pause-btn i');
     if (ttsBtn) ttsBtn.classList.add('d-none');
     if (player) {
       player.classList.remove('d-none');
       player.classList.add('d-inline-flex');
     }
+    if (playPauseIcon) playPauseIcon.className = 'fas fa-pause';
+
+    setTimeout(() => {
+      speakNextChunk();
+    }, 50);
   };
 
   window.pauseResumeTTS = function() {
     if (!isPlaying) return;
     const icon = document.querySelector('#tts-play-pause-btn i');
-    if (synth.paused) {
+    if (synth.paused || isPaused) {
       synth.resume();
+      isPaused = false;
       if (icon) icon.className = 'fas fa-pause';
     } else {
       synth.pause();
+      isPaused = true;
       if (icon) icon.className = 'fas fa-play';
     }
   };
@@ -351,13 +433,19 @@ script_includes:
     const btn = document.getElementById('tts-speed-btn');
     if (btn) btn.textContent = currentSpeed + 'x';
     if (isPlaying) {
-      window.toggleTTS();
+      synth.cancel();
+      setTimeout(() => {
+        if (isPlaying) speakNextChunk();
+      }, 50);
     }
   };
 
   window.stopTTS = function() {
     synth.cancel();
     isPlaying = false;
+    isPaused = false;
+    chunkIndex = 0;
+    textChunks = [];
     const ttsBtn = document.getElementById('btn-tts');
     const player = document.getElementById('tts-player');
     const icon = document.querySelector('#tts-play-pause-btn i');

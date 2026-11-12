@@ -51,11 +51,11 @@
         <li class="nav-item{% if tab.url == page.url %}{{ " active" }}{% endif %}">
           <a href="{{ tab.url | relative_url }}" class="nav-link d-flex align-items-center">
             <i class="fa-fw {{ tab.icon }}"></i>
-            {% capture tab_name %}{{ tab.url | split: '/' }}{% endcapture %}
+            {% assign tab_slug = tab.url | remove: '/' %}
 
             <span>
               {% if is_en %}
-                {% case tab_name %}
+                {% case tab_slug %}
                   {% when 'categories' %}CATEGORIES
                   {% when 'tags' %}TAGS
                   {% when 'archives' %}ARCHIVES
@@ -65,7 +65,7 @@
                   {% else %}{{ tab.title | upcase }}
                 {% endcase %}
               {% else %}
-                {% case tab_name %}
+                {% case tab_slug %}
                   {% when 'categories' %}КАТЕГОРІЇ
                   {% when 'tags' %}ТЕГИ
                   {% when 'archives' %}АРХІВИ

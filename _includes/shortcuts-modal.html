@@ -154,7 +154,6 @@
     const isHidden = modal.classList.contains('d-none');
     if (isHidden) {
       modal.classList.remove('d-none');
-      // Localization check
       const isEn = (typeof window.isSedunlabEnglish === 'function') 
         ? window.isSedunlabEnglish() 
         : window.location.pathname.startsWith('/en/');
@@ -173,9 +172,8 @@
     }
   };
 
-  // Keyboard Event Listener
+  /* Global Keyboard Event Listener */
   document.addEventListener('keydown', function(e) {
-    // Ignore when typing inside input, textarea, or contenteditable
     const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
     if (tag === 'input' || tag === 'textarea' || tag === 'select' || (e.target && e.target.isContentEditable)) {
       if (e.key === 'Escape') {
@@ -184,7 +182,6 @@
       return;
     }
 
-    // Modal close on Escape
     if (e.key === 'Escape') {
       const modal = document.getElementById('shortcuts-modal');
       if (modal && !modal.classList.contains('d-none')) {
@@ -194,12 +191,11 @@
       return;
     }
 
-    // Ignore if Ctrl/Alt/Meta pressed (except for ? which is Shift+/)
     if (e.ctrlKey || e.altKey || e.metaKey) return;
 
     const key = e.key.toLowerCase();
 
-    // 1. Search: '/'
+    /* Search: '/' */
     if (e.key === '/') {
       e.preventDefault();
       const searchTrigger = document.getElementById('search-trigger');
@@ -213,14 +209,14 @@
       return;
     }
 
-    // 2. Help: '?'
+    /* Help: '?' */
     if (e.key === '?') {
       e.preventDefault();
       window.toggleShortcutsModal();
       return;
     }
 
-    // 3. Bookmark: 'b'
+    /* Bookmark: 'b' */
     if (key === 'b') {
       const postBmBtn = document.querySelector('.btn-bookmark');
       if (postBmBtn) {
@@ -230,7 +226,7 @@
       return;
     }
 
-    // 4. Theme: 't'
+    /* Theme: 't' */
     if (key === 't') {
       e.preventDefault();
       if (typeof ModeToggle !== 'undefined' && ModeToggle.flipMode) {
@@ -242,7 +238,7 @@
       return;
     }
 
-    // 5. Next post: 'k'
+    /* Next post: 'k' */
     if (key === 'k') {
       const nextLink = document.querySelector('.post-nav-next a') || document.querySelector('#post-nav .next a');
       if (nextLink) {
@@ -252,7 +248,7 @@
       return;
     }
 
-    // 6. Previous post: 'j'
+    /* Previous post: 'j' */
     if (key === 'j') {
       const prevLink = document.querySelector('.post-nav-prev a') || document.querySelector('#post-nav .previous a');
       if (prevLink) {
@@ -262,7 +258,7 @@
       return;
     }
 
-    // 7. Home: 'h'
+    /* Home: 'h' */
     if (key === 'h') {
       e.preventDefault();
       const isEn = (typeof window.isSedunlabEnglish === 'function') ? window.isSedunlabEnglish() : false;

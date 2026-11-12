@@ -193,7 +193,7 @@
     const list = getBookmarks();
     updateSidebarCount(list.length);
 
-    // Update post & card buttons
+    /* Update post & card buttons */
     const allBtns = document.querySelectorAll('.btn-bookmark, .btn-card-bookmark');
     allBtns.forEach(btn => {
       const url = btn.getAttribute('data-url');
@@ -202,7 +202,7 @@
       }
     });
 
-    // If on bookmarks page, refresh grid
+    /* If on bookmarks page, refresh grid */
     if (typeof window.renderBookmarksPage === 'function') {
       window.renderBookmarksPage();
     }
@@ -219,12 +219,10 @@
     const existingIndex = list.findIndex(item => normalizeUrl(item.url) === target);
 
     if (existingIndex >= 0) {
-      // Remove
       list.splice(existingIndex, 1);
       saveBookmarks(list);
       showToast(isEn ? '🔖 Removed from <a href="' + bookmarksUrl + '">Bookmarks</a>' : '🔖 Статтю вилучено з <a href="' + bookmarksUrl + '">Обраного</a>');
     } else {
-      // Add
       const item = {
         url: url,
         title: btn.getAttribute('data-title') || document.title,
@@ -267,14 +265,14 @@
   window.showBookmarkToast = showToast;
   window.isSedunlabEnglish = isEnglish;
 
-  // Cross-tab synchronization
+  /* Cross-tab synchronization */
   window.addEventListener('storage', function(e) {
     if (e.key === BM_KEY) {
       updateAllUI();
     }
   });
 
-  // Init on DOM ready
+  /* Init on DOM ready */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', updateAllUI);
   } else {

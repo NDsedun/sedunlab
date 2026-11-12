@@ -7,7 +7,7 @@ layout: default
 {% if page.url contains '/en/' %}
   <!-- English Homepage: Show all English posts without pagination -->
   <script>
-    // Save language override so clicking Home doesn't redirect back to UA
+    /* Save language override so clicking Home doesn't redirect back to UA */
     sessionStorage.setItem('lang-override', 'en');
   </script>
   {% assign posts = site.posts | where: 'lang', 'en' %}
