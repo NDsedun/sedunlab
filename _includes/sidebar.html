@@ -17,12 +17,17 @@
   <!-- .profile-wrapper -->
 
   <nav class="flex-column flex-grow-1 w-100 ps-0">
+    {% assign is_en = false %}
+    {% if page.url contains '/en/' or page.lang == 'en' %}
+      {% assign is_en = true %}
+    {% endif %}
+
     <ul class="nav">
       <!-- home -->
       <li class="nav-item{% if page.layout == 'home' %}{{ " active" }}{% endif %}">
-        <a href="{{ '/' | relative_url }}" class="nav-link">
+        <a href="{% if is_en %}{{ '/en/' | relative_url }}{% else %}{{ '/' | relative_url }}{% endif %}" class="nav-link">
           <i class="fa-fw fas fa-home"></i>
-          <span>{{ site.data.locales[include.lang].tabs.home | upcase }}</span>
+          <span>{% if is_en %}HOME{% else %}ГОЛОВНА{% endif %}</span>
         </a>
       </li>
       <!-- the real tabs -->
@@ -33,14 +38,24 @@
             {% capture tab_name %}{{ tab.url | split: '/' }}{% endcapture %}
 
             <span>
-              {% if tab_name == 'bookmarks' %}
-                {% if page.url contains '/en/' %}
-                  BOOKMARKS
-                {% else %}
-                  ОБРАНЕ
-                {% endif %}
+              {% if is_en %}
+                {% case tab_name %}
+                  {% when 'categories' %}CATEGORIES
+                  {% when 'tags' %}TAGS
+                  {% when 'archives' %}ARCHIVES
+                  {% when 'bookmarks' %}BOOKMARKS
+                  {% when 'about' %}ABOUT
+                  {% else %}{{ tab.title | upcase }}
+                {% endcase %}
               {% else %}
-                {{ site.data.locales[include.lang].tabs.[tab_name] | default: tab.title | upcase }}
+                {% case tab_name %}
+                  {% when 'categories' %}КАТЕГОРІЇ
+                  {% when 'tags' %}ТЕГИ
+                  {% when 'archives' %}АРХІВИ
+                  {% when 'bookmarks' %}ОБРАНЕ
+                  {% when 'about' %}ПРО БЛОГ
+                  {% else %}{{ tab.title | upcase }}
+                {% endcase %}
               {% endif %}
             </span>
             {% if tab.url == '/bookmarks/' %}
@@ -83,19 +98,19 @@
           <li>
             <button class="dropdown-item d-flex align-items-center" type="button" data-theme-mode="light">
               {{- icon_light -}}
-              {{- site.data.locales[lang].theme.light -}}
+              {% if is_en %}Light{% else %}Світла{% endif %}
             </button>
           </li>
           <li>
             <button class="dropdown-item d-flex align-items-center" type="button" data-theme-mode="dark">
               {{- icon_dark -}}
-              {{- site.data.locales[lang].theme.dark -}}
+              {% if is_en %}Dark{% else %}Темна{% endif %}
             </button>
           </li>
           <li>
             <button class="dropdown-item d-flex align-items-center" type="button" data-theme-mode="system">
               {{- icon_system -}}
-              {{- site.data.locales[lang].theme.system -}}
+              {% if is_en %}System{% else %}Системна{% endif %}
             </button>
           </li>
         </ul>
