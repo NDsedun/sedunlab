@@ -1,0 +1,394 @@
+---
+layout: page
+---
+
+{% include lang.html %}
+
+<style>
+  .tool-card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .tool-tab-btn.active {
+    background-color: var(--bs-primary, #0d6efd) !important;
+    color: #fff !important;
+  }
+  .copy-btn-feedback {
+    color: #10b981 !important;
+  }
+</style>
+
+<div id="tools-container" class="pb-5">
+  <div class="mb-4 pb-2 border-bottom">
+    <p class="text-muted mb-0" id="tools-subtitle" style="font-size: 0.95rem;">
+      Швидкі інтерактивні утиліти для sysadmin, DevOps та homelab. Працюють на 100% локально у вашому браузері.
+    </p>
+  </div>
+
+  <!-- Tools Navigation Tabs -->
+  <ul class="nav nav-pills gap-2 mb-4 flex-wrap" id="tools-pills" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link active rounded-pill px-3 py-1 tool-tab-btn" data-target="tool-cidr">
+        <i class="fas fa-network-wired me-1"></i>CIDR Калькулятор
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link rounded-pill px-3 py-1 tool-tab-btn" data-target="tool-cron">
+        <i class="fas fa-clock me-1"></i>Cron Перекладач
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link rounded-pill px-3 py-1 tool-tab-btn" data-target="tool-pwd">
+        <i class="fas fa-key me-1"></i>Генератор Паролів
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link rounded-pill px-3 py-1 tool-tab-btn" data-target="tool-base64">
+        <i class="fas fa-exchange-alt me-1"></i>Base64 / URL
+      </button>
+    </li>
+  </ul>
+
+  <!-- 1. CIDR Subnet Calculator -->
+  <div id="tool-cidr" class="tool-section card border-0 shadow-sm p-4 mb-4">
+    <h3 class="h5 fw-bold mb-3"><i class="fas fa-network-wired text-primary me-2"></i>Калькулятор IP-підмереж (CIDR)</h3>
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-md-8">
+        <label class="form-label text-muted small">IP-адреса та префікс (або виберіть маску)</label>
+        <div class="input-group">
+          <input type="text" id="cidr-input" class="form-control" value="192.168.1.100/24" placeholder="192.168.1.1/24">
+          <button class="btn btn-primary" type="button" onclick="calculateCIDR()">Розрахувати</button>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <label class="form-label text-muted small">Швидкі пресети</label>
+        <div class="d-flex gap-1 flex-wrap">
+          <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setCIDR('10.0.0.1/16')">10.0.0.0/16</button>
+          <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setCIDR('172.16.0.1/12')">172.16.0.0/12</button>
+          <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setCIDR('192.168.1.1/24')">/24</button>
+          <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setCIDR('10.244.0.1/28')">/28</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="cidr-results" class="table-responsive mt-2">
+      <table class="table table-sm table-bordered align-middle">
+        <tbody>
+          <tr>
+            <th class="w-25 text-muted">Адреса мережі (Network)</th>
+            <td id="res-network" class="font-monospace fw-semibold">192.168.1.0</td>
+          </tr>
+          <tr>
+            <th class="text-muted">Маска підмережі (Netmask)</th>
+            <td id="res-netmask" class="font-monospace">255.255.255.0</td>
+          </tr>
+          <tr>
+            <th class="text-muted">Broadcast адреса</th>
+            <td id="res-broadcast" class="font-monospace">192.168.1.255</td>
+          </tr>
+          <tr>
+            <th class="text-muted">Діапазон хостів</th>
+            <td id="res-range" class="font-monospace text-primary">192.168.1.1 - 192.168.1.254</td>
+          </tr>
+          <tr>
+            <th class="text-muted">Корисних хостів (Usable)</th>
+            <td id="res-hosts" class="fw-bold">254</td>
+          </tr>
+          <tr>
+            <th class="text-muted">Wildcard маска</th>
+            <td id="res-wildcard" class="font-monospace text-muted">0.0.0.255</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 2. Cron Expression Explainer -->
+  <div id="tool-cron" class="tool-section card border-0 shadow-sm p-4 mb-4 d-none">
+    <h3 class="h5 fw-bold mb-3"><i class="fas fa-clock text-primary me-2"></i>Cron Перекладач та Помічник</h3>
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-md-8">
+        <label class="form-label text-muted small">Cron-вираз (5 полів: хв год день місяць день_тижня)</label>
+        <div class="input-group">
+          <input type="text" id="cron-input" class="form-control font-monospace" value="*/15 * * * *" placeholder="*/5 * * * *">
+          <button class="btn btn-primary" type="button" onclick="explainCron()">Пояснити</button>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <label class="form-label text-muted small">Популярні розклади</label>
+        <div class="d-flex gap-1 flex-wrap">
+          <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setCron('*/5 * * * *')">Кожні 5хв</button>
+          <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setCron('0 * * * *')">Щогодини</button>
+          <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setCron('0 4 * * *')">О 04:00 щодня</button>
+          <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="setCron('0 2 * * 1')">Щопонеділка</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-3 rounded-3 border bg-light-subtle">
+      <div class="text-muted small mb-1">Людське пояснення:</div>
+      <div id="cron-explanation" class="fs-5 fw-bold text-primary mb-2">Кожні 15 хвилин</div>
+      <div class="text-muted small" id="cron-breakdown">
+        Хвилини: <code>*/15</code> | Години: <code>*</code> | День місяця: <code>*</code> | Місяць: <code>*</code> | День тижня: <code>*</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Secure Password / Secret Key Generator -->
+  <div id="tool-pwd" class="tool-section card border-0 shadow-sm p-4 mb-4 d-none">
+    <h3 class="h5 fw-bold mb-3"><i class="fas fa-key text-primary me-2"></i>Генератор надійних паролів та секретів</h3>
+    <div class="mb-3">
+      <div class="input-group">
+        <input type="text" id="pwd-output" class="form-control font-monospace fs-5" readonly>
+        <button class="btn btn-primary" type="button" onclick="copyToolValue('pwd-output', this)">
+          <i class="fas fa-copy me-1"></i>Копіювати
+        </button>
+        <button class="btn btn-outline-secondary" type="button" onclick="generatePassword()">
+          <i class="fas fa-sync-alt me-1"></i>Оновити
+        </button>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        <label class="form-label text-muted small d-flex justify-content-between">
+          <span>Довжина пароля:</span>
+          <span id="pwd-length-val" class="fw-bold">20</span>
+        </label>
+        <input type="range" class="form-range" id="pwd-length" min="8" max="64" value="20" oninput="document.getElementById('pwd-length-val').textContent = this.value; generatePassword();">
+      </div>
+      <div class="col-12 col-md-6 d-flex flex-wrap gap-3 align-items-center pt-2">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="pwd-upper" checked onchange="generatePassword()">
+          <label class="form-check-label" for="pwd-upper">Великі (A-Z)</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="pwd-lower" checked onchange="generatePassword()">
+          <label class="form-check-label" for="pwd-lower">Малі (a-z)</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="pwd-digits" checked onchange="generatePassword()">
+          <label class="form-check-label" for="pwd-digits">Цифри (0-9)</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="pwd-symbols" checked onchange="generatePassword()">
+          <label class="form-check-label" for="pwd-symbols">Символи (!@#$)</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 pt-3 border-top">
+      <h4 class="h6 text-muted mb-2">Генератор токенів для Docker / JWT / API:</h4>
+      <div class="d-flex gap-2 flex-wrap">
+        <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="generateToken(32, 'hex')">32-byte Hex (openssl rand -hex 32)</button>
+        <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="generateToken(32, 'base64')">32-byte Base64</button>
+        <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="generateUUID()">UUID v4</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Base64 & URL Encoder / Decoder -->
+  <div id="tool-base64" class="tool-section card border-0 shadow-sm p-4 mb-4 d-none">
+    <h3 class="h5 fw-bold mb-3"><i class="fas fa-exchange-alt text-primary me-2"></i>Base64 & URL Кодувальник / Декодер</h3>
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        <label class="form-label text-muted small">Вхідний текст</label>
+        <textarea id="conv-input" class="form-control font-monospace" rows="6" placeholder="Введіть текст або Base64/URL рядок..."></textarea>
+      </div>
+      <div class="col-12 col-md-6">
+        <label class="form-label text-muted small d-flex justify-content-between">
+          <span>Результат</span>
+          <button class="btn btn-link p-0 text-decoration-none small" onclick="copyToolValue('conv-output', this)">
+            <i class="fas fa-copy me-1"></i>Скопіювати
+          </button>
+        </label>
+        <textarea id="conv-output" class="form-control font-monospace bg-light-subtle" rows="6" readonly></textarea>
+      </div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap mt-3">
+      <button class="btn btn-sm btn-primary rounded-pill" onclick="convertBase64(true)">Base64 Encode</button>
+      <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="convertBase64(false)">Base64 Decode</button>
+      <button class="btn btn-sm btn-secondary rounded-pill" onclick="convertURL(true)">URL Encode</button>
+      <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="convertURL(false)">URL Decode</button>
+      <button class="btn btn-sm btn-outline-danger rounded-pill ms-auto" onclick="document.getElementById('conv-input').value=''; document.getElementById('conv-output').value='';">Очистити</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Tab Switching
+document.querySelectorAll('.tool-tab-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.tool-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tool-section').forEach(s => s.classList.add('d-none'));
+    this.classList.add('active');
+    const target = this.getAttribute('data-target');
+    const el = document.getElementById(target);
+    if (el) el.classList.remove('d-none');
+  });
+});
+
+// Copy Helper
+function copyToolValue(id, btn) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const val = el.value || el.textContent;
+  navigator.clipboard.writeText(val).then(() => {
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check me-1"></i>Скопійовано!';
+    setTimeout(() => btn.innerHTML = orig, 1800);
+  });
+}
+
+// 1. CIDR Functions
+function ipToLong(ip) {
+  return ip.split('.').reduce((acc, oct) => (acc << 8) + parseInt(oct, 10), 0) >>> 0;
+}
+function longToIp(long) {
+  return [ (long >>> 24) & 255, (long >>> 16) & 255, (long >>> 8) & 255, long & 255 ].join('.');
+}
+function setCIDR(val) {
+  document.getElementById('cidr-input').value = val;
+  calculateCIDR();
+}
+function calculateCIDR() {
+  const input = document.getElementById('cidr-input').value.trim();
+  const parts = input.split('/');
+  if (parts.length !== 2) return;
+  const ip = parts[0].trim();
+  const prefix = parseInt(parts[1].trim(), 10);
+  if (isNaN(prefix) || prefix < 0 || prefix > 32) return;
+
+  const ipLong = ipToLong(ip);
+  const maskLong = prefix === 0 ? 0 : (~0 << (32 - prefix)) >>> 0;
+  const wildcardLong = ~maskLong >>> 0;
+  const netLong = (ipLong & maskLong) >>> 0;
+  const bcastLong = (netLong | wildcardLong) >>> 0;
+
+  const totalHosts = prefix >= 31 ? (prefix === 31 ? 2 : 1) : Math.max(0, Math.pow(2, 32 - prefix) - 2);
+  const firstHost = prefix >= 31 ? netLong : netLong + 1;
+  const lastHost = prefix >= 31 ? bcastLong : bcastLong - 1;
+
+  document.getElementById('res-network').textContent = longToIp(netLong);
+  document.getElementById('res-netmask').textContent = longToIp(maskLong);
+  document.getElementById('res-broadcast').textContent = longToIp(bcastLong);
+  document.getElementById('res-range').textContent = longToIp(firstHost) + ' — ' + longToIp(lastHost);
+  document.getElementById('res-hosts').textContent = totalHosts.toLocaleString();
+  document.getElementById('res-wildcard').textContent = longToIp(wildcardLong);
+}
+
+// 2. Cron Functions
+function setCron(exp) {
+  document.getElementById('cron-input').value = exp;
+  explainCron();
+}
+function explainCron() {
+  const exp = document.getElementById('cron-input').value.trim();
+  const parts = exp.split(/\s+/);
+  const expEl = document.getElementById('cron-explanation');
+  const bdown = document.getElementById('cron-breakdown');
+
+  if (parts.length !== 5) {
+    expEl.textContent = 'Неправильний формат (має бути 5 полів, розділених пробілами)';
+    return;
+  }
+
+  const [m, h, dom, mon, dow] = parts;
+  bdown.innerHTML = `Хвилини: <code>${m}</code> | Години: <code>${h}</code> | День місяця: <code>${dom}</code> | Місяць: <code>${mon}</code> | День тижня: <code>${dow}</code>`;
+
+  let explanation = '';
+  if (exp === '* * * * *') explanation = 'Щохвилини';
+  else if (exp === '*/5 * * * *') explanation = 'Кожні 5 хвилин';
+  else if (exp === '*/10 * * * *') explanation = 'Кожні 10 хвилин';
+  else if (exp === '*/15 * * * *') explanation = 'Кожні 15 хвилин';
+  else if (exp === '*/30 * * * *') explanation = 'Кожні 30 хвилин';
+  else if (exp === '0 * * * *') explanation = 'Щогодини (на початку години)';
+  else if (m === '0' && h.match(/^\d+$/) && dom === '*' && mon === '*' && dow === '*') {
+    explanation = `Щодня о ${h.padStart(2, '0')}:00`;
+  } else if (m.match(/^\d+$/) && h.match(/^\d+$/) && dom === '*' && mon === '*' && dow === '*') {
+    explanation = `Щодня о ${h.padStart(2, '0')}:${m.padStart(2, '0')}`;
+  } else if (dow === '1' && m === '0') {
+    explanation = `Щопонеділка о ${h}:00`;
+  } else if (dom === '1' && m === '0' && h === '0') {
+    explanation = 'Першого числа кожного місяця опівночі';
+  } else {
+    explanation = `Виконується за розкладом: хв [${m}], год [${h}], день [${dom}], місяць [${mon}], день тижня [${dow}]`;
+  }
+  expEl.textContent = explanation;
+}
+
+// 3. Password / Secret Generator
+function generatePassword() {
+  const len = parseInt(document.getElementById('pwd-length').value, 10);
+  const upper = document.getElementById('pwd-upper').checked;
+  const lower = document.getElementById('pwd-lower').checked;
+  const digits = document.getElementById('pwd-digits').checked;
+  const symbols = document.getElementById('pwd-symbols').checked;
+
+  let chars = '';
+  if (lower) chars += 'abcdefghijklmnopqrstuvwxyz';
+  if (upper) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (digits) chars += '0123456789';
+  if (symbols) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+  if (!chars) chars = 'abcdefghijklmnopqrstuvwxyz';
+
+  const array = new Uint32Array(len);
+  window.crypto.getRandomValues(array);
+  let pwd = '';
+  for (let i = 0; i < len; i++) {
+    pwd += chars[array[i] % chars.length];
+  }
+  document.getElementById('pwd-output').value = pwd;
+}
+
+function generateToken(bytesCount, format) {
+  const array = new Uint8Array(bytesCount);
+  window.crypto.getRandomValues(array);
+  let str = '';
+  if (format === 'hex') {
+    str = Array.from(array, b => b.toString(16).padStart(2, '0')).join('');
+  } else {
+    str = btoa(String.fromCharCode.apply(null, array));
+  }
+  document.getElementById('pwd-output').value = str;
+}
+
+function generateUUID() {
+  document.getElementById('pwd-output').value = crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+// 4. Base64 & URL
+function convertBase64(encode) {
+  const val = document.getElementById('conv-input').value;
+  const out = document.getElementById('conv-output');
+  try {
+    if (encode) {
+      out.value = btoa(unescape(encodeURIComponent(val)));
+    } else {
+      out.value = decodeURIComponent(escape(atob(val.trim())));
+    }
+  } catch(e) {
+    out.value = 'Помилка: Невалідний Base64 рядок (' + e.message + ')';
+  }
+}
+
+function convertURL(encode) {
+  const val = document.getElementById('conv-input').value;
+  const out = document.getElementById('conv-output');
+  try {
+    out.value = encode ? encodeURIComponent(val) : decodeURIComponent(val);
+  } catch(e) {
+    out.value = 'Помилка (' + e.message + ')';
+  }
+}
+
+// Initialize default values
+document.addEventListener('DOMContentLoaded', () => {
+  calculateCIDR();
+  explainCron();
+  generatePassword();
+});
+</script>

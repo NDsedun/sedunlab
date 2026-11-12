@@ -1,0 +1,274 @@
+<!-- Keyboard Shortcuts & Global Utilities Component -->
+<style>
+  /* Homelab Status Pulse */
+  .homelab-pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #10b981;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: homelabPulse 2s infinite cubic-bezier(0.66, 0, 0, 1);
+  }
+  @keyframes homelabPulse {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  }
+
+  /* Shortcuts Modal Overlay */
+  .shortcuts-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 10600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .shortcuts-modal-box {
+    background: var(--card-bg, #1e1e24);
+    color: var(--text-color, #e4e4e7);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 440px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    animation: shortcutsModalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes shortcutsModalIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .shortcuts-modal-box kbd {
+    background: var(--main-bg, #27272a);
+    color: var(--bs-primary, #60a5fa);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+    font-size: 0.85rem;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-family: var(--font-family-monospace, monospace);
+  }
+
+  /* Print Media Styles (Clean PDF Export) */
+  @media print {
+    #sidebar, #topbar-wrapper, #panel-wrapper, #tail-wrapper,
+    #reading-progress-bar, #btn-tts, #tts-player, .btn-bookmark,
+    .post-tail-bottom, #back-to-top, #mask, .giscus, #toc-solo-trigger, #toc-bar,
+    .btn-card-bookmark, #sedunlab-toast-container, .shortcuts-modal-overlay {
+      display: none !important;
+    }
+    #main-wrapper {
+      margin: 0 !important;
+      padding: 0 !important;
+      max-width: 100% !important;
+    }
+    main {
+      width: 100% !important;
+      max-width: 100% !important;
+      flex: 0 0 100% !important;
+    }
+    body {
+      background: #ffffff !important;
+      color: #111827 !important;
+      font-size: 11pt !important;
+    }
+    pre, code {
+      page-break-inside: avoid;
+      background: #f3f4f6 !important;
+      color: #111827 !important;
+      border: 1px solid #e5e7eb !important;
+    }
+    h1, h2, h3, h4 {
+      page-break-after: avoid;
+      color: #111827 !important;
+    }
+    img {
+      max-width: 100% !important;
+      page-break-inside: avoid;
+    }
+  }
+</style>
+
+<!-- Shortcuts Modal Dialog -->
+<div id="shortcuts-modal" class="shortcuts-modal-overlay d-none" onclick="if(event.target===this) window.toggleShortcutsModal();" role="dialog" aria-modal="true" aria-labelledby="shortcuts-modal-title">
+  <div class="shortcuts-modal-box">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 id="shortcuts-modal-title" class="m-0 fw-bold d-flex align-items-center gap-2">
+        <i class="fas fa-keyboard text-primary"></i>
+        <span id="shortcuts-title-text">Клавіатурні шорткати</span>
+      </h5>
+      <button type="button" class="btn-close btn-sm" aria-label="Закрити" onclick="window.toggleShortcutsModal()"></button>
+    </div>
+
+    <div class="shortcuts-list d-flex flex-column gap-2 mb-3">
+      <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
+        <span id="sc-label-search">Пошук по блогу</span>
+        <kbd>/</kbd>
+      </div>
+      <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
+        <span id="sc-label-bookmark">Додати / зняти з обраного</span>
+        <kbd>B</kbd>
+      </div>
+      <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
+        <span id="sc-label-theme">Змінити тему (Світла / Темна)</span>
+        <kbd>T</kbd>
+      </div>
+      <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
+        <span id="sc-label-prev">Попередня публікація</span>
+        <kbd>J</kbd>
+      </div>
+      <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
+        <span id="sc-label-next">Наступна публікація</span>
+        <kbd>K</kbd>
+      </div>
+      <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
+        <span id="sc-label-home">На головну</span>
+        <kbd>H</kbd>
+      </div>
+      <div class="d-flex justify-content-between align-items-center py-1">
+        <span id="sc-label-help">Ця довідка</span>
+        <kbd>?</kbd>
+      </div>
+    </div>
+
+    <div class="text-center text-muted small">
+      Натисніть <kbd>Esc</kbd> щоб закрити
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  window.toggleShortcutsModal = function() {
+    const modal = document.getElementById('shortcuts-modal');
+    if (!modal) return;
+    const isHidden = modal.classList.contains('d-none');
+    if (isHidden) {
+      modal.classList.remove('d-none');
+      // Localization check
+      const isEn = (typeof window.isSedunlabEnglish === 'function') 
+        ? window.isSedunlabEnglish() 
+        : window.location.pathname.startsWith('/en/');
+      if (isEn) {
+        document.getElementById('shortcuts-title-text').textContent = 'Keyboard Shortcuts';
+        document.getElementById('sc-label-search').textContent = 'Search articles';
+        document.getElementById('sc-label-bookmark').textContent = 'Toggle bookmark';
+        document.getElementById('sc-label-theme').textContent = 'Toggle theme (Light / Dark)';
+        document.getElementById('sc-label-prev').textContent = 'Previous post';
+        document.getElementById('sc-label-next').textContent = 'Next post';
+        document.getElementById('sc-label-home').textContent = 'Go to Home';
+        document.getElementById('sc-label-help').textContent = 'Show this help';
+      }
+    } else {
+      modal.classList.add('d-none');
+    }
+  };
+
+  // Keyboard Event Listener
+  document.addEventListener('keydown', function(e) {
+    // Ignore when typing inside input, textarea, or contenteditable
+    const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+    if (tag === 'input' || tag === 'textarea' || tag === 'select' || (e.target && e.target.isContentEditable)) {
+      if (e.key === 'Escape') {
+        e.target.blur();
+      }
+      return;
+    }
+
+    // Modal close on Escape
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('shortcuts-modal');
+      if (modal && !modal.classList.contains('d-none')) {
+        modal.classList.add('d-none');
+        return;
+      }
+      return;
+    }
+
+    // Ignore if Ctrl/Alt/Meta pressed (except for ? which is Shift+/)
+    if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+    const key = e.key.toLowerCase();
+
+    // 1. Search: '/'
+    if (e.key === '/') {
+      e.preventDefault();
+      const searchTrigger = document.getElementById('search-trigger');
+      const searchInput = document.getElementById('search-input');
+      if (searchTrigger && getComputedStyle(searchTrigger).display !== 'none') {
+        searchTrigger.click();
+      }
+      if (searchInput) {
+        searchInput.focus();
+      }
+      return;
+    }
+
+    // 2. Help: '?'
+    if (e.key === '?') {
+      e.preventDefault();
+      window.toggleShortcutsModal();
+      return;
+    }
+
+    // 3. Bookmark: 'b'
+    if (key === 'b') {
+      const postBmBtn = document.querySelector('.btn-bookmark');
+      if (postBmBtn) {
+        e.preventDefault();
+        postBmBtn.click();
+      }
+      return;
+    }
+
+    // 4. Theme: 't'
+    if (key === 't') {
+      e.preventDefault();
+      if (typeof ModeToggle !== 'undefined' && ModeToggle.flipMode) {
+        ModeToggle.flipMode();
+      } else {
+        const toggleBtn = document.getElementById('mode-toggle');
+        if (toggleBtn) toggleBtn.click();
+      }
+      return;
+    }
+
+    // 5. Next post: 'k'
+    if (key === 'k') {
+      const nextLink = document.querySelector('.post-nav-next a') || document.querySelector('#post-nav .next a');
+      if (nextLink) {
+        e.preventDefault();
+        nextLink.click();
+      }
+      return;
+    }
+
+    // 6. Previous post: 'j'
+    if (key === 'j') {
+      const prevLink = document.querySelector('.post-nav-prev a') || document.querySelector('#post-nav .previous a');
+      if (prevLink) {
+        e.preventDefault();
+        prevLink.click();
+      }
+      return;
+    }
+
+    // 7. Home: 'h'
+    if (key === 'h') {
+      e.preventDefault();
+      const isEn = (typeof window.isSedunlabEnglish === 'function') ? window.isSedunlabEnglish() : false;
+      window.location.href = isEn ? '/en/' : '/';
+      return;
+    }
+  });
+})();
+</script>

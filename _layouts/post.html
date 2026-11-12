@@ -13,6 +13,8 @@ script_includes:
 
 {% include toc-status.html %}
 
+<div id="reading-progress-bar" style="position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, #3b82f6, #06b6d4); width: 0%; z-index: 99999; transition: width 0.08s linear; pointer-events: none;"></div>
+
 <article class="px-1" data-toc="{{ enable_toc }}">
   <header>
     <h1 data-toc-skip>{{ page.title }}</h1>
@@ -93,10 +95,48 @@ script_includes:
           <!-- read time -->
           {% include read-time.html content=content prompt=true lang=lang %}
 
+          <!-- Text-to-Speech (Listen) button -->
+          <button
+            type="button"
+            id="btn-tts"
+            class="btn btn-sm btn-outline-secondary rounded-pill d-inline-flex align-items-center gap-1 ms-1"
+            title="Слухати статтю"
+            aria-label="Слухати статтю"
+            onclick="window.toggleTTS()"
+          >
+            <i class="fas fa-headphones"></i>
+            <span id="tts-label">Слухати</span>
+          </button>
+
+          <!-- TTS Mini Player Controls -->
+          <div id="tts-player" class="d-none align-items-center gap-1 bg-light-subtle px-2 py-1 rounded-pill border">
+            <button type="button" class="btn btn-sm btn-link p-0 text-primary" id="tts-play-pause-btn" onclick="window.pauseResumeTTS()" title="Пауза / Продовжити">
+              <i class="fas fa-pause"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-link p-0 text-muted fw-bold" id="tts-speed-btn" onclick="window.changeTTSSpeed()" title="Швидкість читання" style="font-size: 0.72rem; text-decoration: none;">
+              1x
+            </button>
+            <button type="button" class="btn btn-sm btn-link p-0 text-danger ms-1" onclick="window.stopTTS()" title="Зупинити">
+              <i class="fas fa-stop"></i>
+            </button>
+          </div>
+
+          <!-- Print / Save as PDF button -->
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary rounded-pill d-inline-flex align-items-center gap-1 ms-1"
+            title="Зберегти статтю як PDF"
+            aria-label="Зберегти статтю як PDF"
+            onclick="window.print()"
+          >
+            <i class="fas fa-file-pdf"></i>
+            <span class="d-none d-sm-inline">PDF</span>
+          </button>
+
           <!-- bookmark button -->
           <button
             type="button"
-            class="btn btn-sm btn-outline-primary rounded-pill btn-bookmark d-inline-flex align-items-center gap-1 ms-2"
+            class="btn btn-sm btn-outline-primary rounded-pill btn-bookmark d-inline-flex align-items-center gap-1 ms-1"
             data-url="{{ page.url | relative_url }}"
             data-title="{{ page.title | xml_escape }}"
             data-date="{{ page.date | date: '%Y-%m-%d' }}"
@@ -222,3 +262,113 @@ script_includes:
   </div>
   <!-- div.post-tail-wrapper -->
 </article>
+
+<script>
+// Reading Progress Bar
+(function() {
+  window.addEventListener('scroll', function() {
+    const bar = document.getElementById('reading-progress-bar');
+    if (!bar) return;
+    const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const progress = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+    bar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+  }, { passive: true });
+})();
+
+// Web Speech API Text-to-Speech (Audio version)
+(function() {
+  if (!('speechSynthesis' in window)) {
+    const btn = document.getElementById('btn-tts');
+    if (btn) btn.classList.add('d-none');
+    return;
+  }
+
+  let synth = window.speechSynthesis;
+  let utterance = null;
+  let isPlaying = false;
+  let currentSpeed = 1.0;
+  const speeds = [1.0, 1.25, 1.5, 0.85];
+
+  function getArticleCleanText() {
+    const content = document.querySelector('.content');
+    if (!content) return '';
+    const clone = content.cloneNode(true);
+    clone.querySelectorAll('pre, code, table, svg, figure, figcaption, .post-meta').forEach(el => el.remove());
+    return clone.innerText.replace(/\s+/g, ' ').trim();
+  }
+
+  window.toggleTTS = function() {
+    if (isPlaying) {
+      window.stopTTS();
+      return;
+    }
+
+    const text = getArticleCleanText();
+    if (!text) return;
+
+    synth.cancel();
+    utterance = new SpeechSynthesisUtterance(text);
+    const isEn = (typeof window.isSedunlabEnglish === 'function') 
+      ? window.isSedunlabEnglish() 
+      : window.location.pathname.includes('-en');
+    utterance.lang = isEn ? 'en-US' : 'uk-UA';
+    utterance.rate = currentSpeed;
+
+    utterance.onend = function() {
+      window.stopTTS();
+    };
+    utterance.onerror = function() {
+      window.stopTTS();
+    };
+
+    synth.speak(utterance);
+    isPlaying = true;
+
+    const ttsBtn = document.getElementById('btn-tts');
+    const player = document.getElementById('tts-player');
+    if (ttsBtn) ttsBtn.classList.add('d-none');
+    if (player) {
+      player.classList.remove('d-none');
+      player.classList.add('d-inline-flex');
+    }
+  };
+
+  window.pauseResumeTTS = function() {
+    if (!isPlaying) return;
+    const icon = document.querySelector('#tts-play-pause-btn i');
+    if (synth.paused) {
+      synth.resume();
+      if (icon) icon.className = 'fas fa-pause';
+    } else {
+      synth.pause();
+      if (icon) icon.className = 'fas fa-play';
+    }
+  };
+
+  window.changeTTSSpeed = function() {
+    const nextIdx = (speeds.indexOf(currentSpeed) + 1) % speeds.length;
+    currentSpeed = speeds[nextIdx];
+    const btn = document.getElementById('tts-speed-btn');
+    if (btn) btn.textContent = currentSpeed + 'x';
+    if (isPlaying) {
+      window.toggleTTS();
+    }
+  };
+
+  window.stopTTS = function() {
+    synth.cancel();
+    isPlaying = false;
+    const ttsBtn = document.getElementById('btn-tts');
+    const player = document.getElementById('tts-player');
+    const icon = document.querySelector('#tts-play-pause-btn i');
+    if (icon) icon.className = 'fas fa-pause';
+    if (player) {
+      player.classList.add('d-none');
+      player.classList.remove('d-inline-flex');
+    }
+    if (ttsBtn) ttsBtn.classList.remove('d-none');
+  };
+
+  window.addEventListener('beforeunload', () => synth.cancel());
+})();
+</script>
