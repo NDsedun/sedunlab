@@ -61,8 +61,8 @@ analytics:
   goatcounter:
     id: # fill in your GoatCounter ID
   umami:
-    id: # fill in your Umami ID
-    domain: # fill in your Umami domain
+    id: 00e68cd6-cd3c-4ebd-9da3-74ade901cd47
+    domain: https://stats.sedunlab.com
   matomo:
     id: # fill in your Matomo ID
     domain: # fill in your Matomo domain
