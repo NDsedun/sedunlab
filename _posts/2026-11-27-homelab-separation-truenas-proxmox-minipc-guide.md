@@ -33,9 +33,6 @@ _Мал. 1. Еволюція Homelab: від монолітного «все-в-
 * **Процесор:** 4-ядерний `Intel Core i5-3550` (3.3 GHz, 77W TDP, стара вбудована графіка Intel HD 2500).
 * **Оперативна пам'ять:** `24 GB DDR3-1333` у двоканалі (комбінація `4+8+4+8 GB`, що дає чудовий запас під ZFS ARC).
 
-![Дашборд TrueNAS SCALE із характеристиками заліза](/assets/img/posts/truenas-scale-hardware-specs.jpg)
-_Мал. 2. Панель керування TrueNAS SCALE: процесор Core i5-3550 та 24 ГБ DDR3 пам'яті на материнській платі ASUS_
-
 На цьому одному залізі паралельно крутилися два рівні сервісів:
 
 1. **Віртуальна машина Ubuntu 24.04 LTS всередині TrueNAS** (виділено 2 GB RAM, 28 GB диск), де жили 8 критичних Docker-контейнерів:
@@ -44,17 +41,13 @@ _Мал. 2. Панель керування TrueNAS SCALE: процесор Core
    * стек моніторингу: `prometheus`, `grafana`, `node-exporter`, `docker-proxy`;
    * `couchdb` — синхронізація бази знань Obsidian;
    * `tuya-dashboard` — панель розумного дому.
-
-![Docker-контейнери у віртуальній машині Ubuntu всередині TrueNAS](/assets/img/posts/truenas-vm-docker-containers.jpg)
-_Мал. 3. Список активних Docker-контейнерів у терміналі віртуальної машини всередині TrueNAS_
-
 2. **TrueNAS SCALE Apps (нативні застосунки):**
    * медіатека та книги: `jellyfin`, `plex`, `photoprism`, `audiobookshelf`, `kavita`;
    * дашборди й зв'язок: `homepage`, `uptime-kuma`, `tailscale`;
    * завантажувач: `transmission`.
 
-![Встановлені застосунки у TrueNAS SCALE](/assets/img/posts/truenas-apps-docker-overview.jpg)
-_Мал. 4. Каталог запущених нативних застосунків (Apps) у вебінтерфейсі TrueNAS SCALE_
+![Встановлені застосунки у TrueNAS SCALE](/assets/img/posts/truenas-scale-installed-apps.jpg)
+_Мал. 2. Каталог запущених нативних застосунків (Apps) у вебінтерфейсі TrueNAS SCALE_
 
 ---
 
@@ -88,6 +81,12 @@ TrueNAS SCALE — геніальна операційна система для 
 | **Intel NUC5i3RYH** | `i3-5005U` (2c/4t), DDR3L, без SSD | ~2 970 ₴ | Найдешевший, компактний, 6–10 Вт | Застарілий (2015 р.), лише DDR3L 1.35V, Mini-HDMI/Mini-DP, PCIe 2.0 (вередливий BIOS до сучасних NVMe), немає 10-bit HEVC |
 | **HP EliteDesk 800 G3 Mini** | `i5-6500T` (4c/4t, 35W), 8 GB DDR4 | ~5 300 ₴ | Тихий, DDR4, чесний M.2 NVMe PCIe 3.0 + 2.5" SATA, DisplayPort | Графіка Intel HD 530 (6 gen) ще не має повноцінного апаратного 10-bit HEVC QuickSync |
 | **HP EliteDesk 800 G4 Mini (65W)** | **`i5-8500` (6c/6t), 8 GB DDR4** | ~7 800 ₴ | **Ідеальний вибір:** 6 повноцінних ядер під PhotoPrism, **Intel UHD 630 (QuickSync 10-bit HEVC/VP9)**, **2 слоти M.2 NVMe!** | Потрібен БЖ на 90W; під Proxmox і повний стек варто докупити планку до 16 GB |
+
+![Оголошення HP EliteDesk 800 G3 Mini на вторинному ринку](/assets/img/posts/hp-elitedesk-800-g3-mini-prom.jpg)
+_Мал. 3. Пропозиції HP EliteDesk 800 G3 Mini на Prom.ua: перевірка конфігурацій із 240 GB SSD та 8 GB DDR4_
+
+![Оголошення HP EliteDesk 800 G4 Mini з перфорованою кришкою](/assets/img/posts/hp-elitedesk-800-g4-mini-prom.jpg)
+_Мал. 4. Оголошення HP EliteDesk 800 G4 Mini (65W, i5-8500) із двома слотами M.2 NVMe під Proxmox_
 
 ### ⚠️ Головна пастка вторинного ринку з NVMe
 Якщо у вас, як і в мене, є свій NVMe SSD — **будьте надзвичайно уважні!**
@@ -164,9 +163,6 @@ Proxmox при інсталяції наполегливо пропонує ZFS.
    > [!IMPORTANT]
    > Без прапорця `MacAddressSpoofing On` сам Proxmox отримає IP-адресу у вашій домашній мережі, але жодна створена всередині нього віртуалка чи контейнер не зможе вийти в інтернет!
 
-![Налаштування віртуальної машини Hyper-V для Proxmox VE](/assets/img/posts/hyper-v-proxmox-vm-settings.png)
-_Мал. 5. Конфігурація Hyper-V: вимкнений Secure Boot та налаштування мережевого адаптера з MAC Spoofing_
-
 ---
 
 ## 6. Перші кроки та «підводні камені» Proxmox VE 9
@@ -179,6 +175,9 @@ _Мал. 5. Конфігурація Hyper-V: вимкнений Secure Boot т�
 * Вимикаємо обидва платні репозиторії: **`pve-enterprise`** та **`ceph-tentacle`**.
 * Натискаємо **Add** і додаємо безкоштовний репозиторій **`No-Subscription`**.
 
+![Налаштування репозиторіїв у Proxmox VE 9](/assets/img/posts/proxmox-ve-repositories-config.png)
+_Мал. 5. Вимкнення платних репозиторіїв Ceph та Enterprise у веб-інтерфейсі Proxmox VE 9_
+
 ### 2. Підключення TrueNAS для бекапів по NFS (секрет Maproot)
 Щоб Proxmox міг автоматично скидати резервні копії всіх віртуалок на TrueNAS:
 1. У TrueNAS створили датасет `proxmox-backups` і розшарили його через **NFS**.
@@ -188,6 +187,9 @@ _Мал. 5. Конфігурація Hyper-V: вимкнений Secure Boot т�
    *(Якщо цього не зробити, Proxmox отримає помилку `Permission Denied` під час спроби записати бекап чи завантажити образ).*
 3. У Proxmox: `Datacenter → Storage → Add → NFS`:
    * Вказуємо IP TrueNAS, шлях до шари та обираємо вміст: **`ISO image, Container template, VZDump backup file`**.
+
+![Додавання NFS-сховища TrueNAS у Proxmox VE](/assets/img/posts/proxmox-add-nfs-truenas-storage.png)
+_Мал. 6. Налаштування NFS-сховища TrueNAS у Proxmox: підключення датасету для бекапів та ISO-образів_
 
 ### 3. Створення віртуальної машини під Docker (Ubuntu 24.04 LTS)
 * Завантажили ISO-образ безпосередньо через веб-інтерфейс Proxmox (`Download from URL` з офіційного дзеркала Ubuntu).
@@ -203,8 +205,8 @@ sudo systemctl enable --now qemu-guest-agent
 ```
 У простої чиста Ubuntu 24.04 бере всього **~430 МБ оперативної пам'яті**!
 
-![Огляд віртуальної машини Ubuntu 24.04 у Proxmox VE 9](/assets/img/posts/proxmox-ve-ubuntu-vm-summary.png)
-_Мал. 6. Дашборд віртуальної машини Ubuntu 24.04 у Proxmox VE 9: споживання пам'яті в простої всього ~430 МБ_
+![Дашборд віртуальної машини Ubuntu 24.04 у Proxmox VE 9](/assets/img/posts/proxmox-ve-ubuntu-vm-summary.jpg)
+_Мал. 7. Дашборд віртуальної машини Ubuntu 24.04 у Proxmox VE 9: споживання пам'яті в простої всього ~430 МБ_
 
 > [!TIP]
 > **Маленький трюк інсталятора Ubuntu Server:** за замовчуванням LVM виділяє під кореневий розділ `/` лише половину віртуального диска. Щоб миттєво віддати під систему 100% простору без перезавантажень, виконайте:
@@ -215,9 +217,6 @@ _Мал. 6. Дашборд віртуальної машини Ubuntu 24.04 у P
 ### 4. Пастка новачка з бекапами в Proxmox
 Коли ми зробили перший тестовий бекап віртуалки на NFS-шару TrueNAS (`Backup now`), зайшли у вкладку `VM → Backup` і... побачили порожній список! Перша думка — бекап не зберігся.
 Але причина банальна: у правому верхньому кутку сторінки бекапів є випадаючий список **`Storage`**, де за замовчуванням обрано локальне сховище `local`. Варто лише перемкнути фільтр на `truenas_backups` — і наш створений архів миттєво з'являється у списку.
-
-![Випадаючий список сховищ для бекапів у Proxmox VE](/assets/img/posts/proxmox-truenas-nfs-backup-trap.jpg)
-_Мал. 7. Пастка бекапів у Proxmox: фільтр сховища truenas_backups у правому верхньому кутку показує збережений архів_
 
 ---
 

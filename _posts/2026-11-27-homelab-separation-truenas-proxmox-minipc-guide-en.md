@@ -35,9 +35,6 @@ My primary TrueNAS node was constructed on a legacy platform that has earned leg
 * **CPU:** 4-core `Intel Core i5-3550` (3.3 GHz, 77W TDP, legacy Intel HD Graphics 2500).
 * **RAM:** `24 GB DDR3-1333` in dual-channel (`4+8+4+8 GB` layout, providing a generous cache for the ZFS Adaptive Replacement Cache / ARC).
 
-![TrueNAS SCALE hardware dashboard](/assets/img/posts/truenas-scale-hardware-specs.jpg)
-_Fig. 2. TrueNAS SCALE hardware telemetry dashboard: Core i5-3550 CPU and 24 GB DDR3 RAM on an ASUS desktop motherboard_
-
 On this single machine, two distinct software tiers operated simultaneously:
 
 1. **Ubuntu 24.04 LTS VM inside TrueNAS** (allocated 2 GB RAM, 28 GB virtual disk) hosting 8 critical Docker containers:
@@ -46,17 +43,13 @@ On this single machine, two distinct software tiers operated simultaneously:
    * Observability stack: `prometheus`, `grafana`, `node-exporter`, `docker-proxy`;
    * `couchdb` — synchronization backend for my Obsidian second brain;
    * `tuya-dashboard` — smart home telemetry board.
-
-![Active Docker containers inside the TrueNAS Ubuntu VM](/assets/img/posts/truenas-vm-docker-containers.jpg)
-_Fig. 3. Active Docker containers listed via SSH inside the TrueNAS Ubuntu virtual machine_
-
 2. **TrueNAS SCALE Apps (Native Catalog Workloads):**
    * Media & document libraries: `jellyfin`, `plex`, `photoprism`, `audiobookshelf`, `kavita`;
    * Networking & metrics: `homepage`, `uptime-kuma`, `tailscale`;
    * Torrent downloader: `transmission`.
 
-![Installed applications on TrueNAS SCALE](/assets/img/posts/truenas-apps-docker-overview.jpg)
-_Fig. 4. Native TrueNAS SCALE Apps catalog overview running on the primary storage node_
+![Installed applications on TrueNAS SCALE](/assets/img/posts/truenas-scale-installed-apps.jpg)
+_Fig. 2. Native TrueNAS SCALE Apps catalog overview running on the primary storage node_
 
 ---
 
@@ -90,6 +83,12 @@ I evaluated the popular corporate enterprise surplus market:
 | **Intel NUC5i3RYH** | `i3-5005U` (2c/4t), DDR3L, no SSD | ~$75 | Cheapest option, 6–10W idle | Vintage 2015 tech, DDR3L 1.35V only, Mini-HDMI/Mini-DP, PCIe 2.0 (picky BIOS with modern NVMe), no 10-bit HEVC |
 | **HP EliteDesk 800 G3 Mini** | `i5-6500T` (4c/4t, 35W), 8 GB DDR4 | ~$135 | Quiet, DDR4, native M.2 NVMe PCIe 3.0 + 2.5" SATA, full DisplayPort | Intel HD Graphics 530 (Skylake) lacks robust 10-bit HEVC QuickSync |
 | **HP EliteDesk 800 G4 Mini (65W)** | **`i5-8500` (6c/6t), 8 GB DDR4** | ~$195 | **The Gold Standard:** 6 true cores for PhotoPrism, **Intel UHD 630 (10-bit HEVC/VP9 QuickSync)**, **Dual M.2 NVMe slots!** | Requires 90W power brick; recommended to upgrade to 16 GB RAM for a full Proxmox stack |
+
+![HP EliteDesk 800 G3 Mini marketplace listing](/assets/img/posts/hp-elitedesk-800-g3-mini-prom.jpg)
+_Fig. 3. Used market candidate HP EliteDesk 800 G3 Mini: evaluating specs with 240 GB SSD and 8 GB DDR4_
+
+![HP EliteDesk 800 G4 Mini 65W with perforated lid](/assets/img/posts/hp-elitedesk-800-g4-mini-prom.jpg)
+_Fig. 4. Winner HP EliteDesk 800 G4 Mini (65W, i5-8500) featuring dual M.2 NVMe drive bays for Proxmox_
 
 ### ⚠️ The Treacherous M.2 NVMe Surplus Trap
 If you own an NVMe SSD and browse used hardware listings, **be exceptionally cautious!**
@@ -166,9 +165,6 @@ Four Hyper-V configuration parameters are mandatory to avoid network connectivit
    > [!IMPORTANT]
    > Without `MacAddressSpoofing On`, the Proxmox host will obtain an IP address on your local LAN, but nested VMs and LXC containers inside it will be completely unable to reach the network!
 
-![Hyper-V VM settings for Proxmox VE](/assets/img/posts/hyper-v-proxmox-vm-settings.png)
-_Fig. 5. Hyper-V VM configuration: Disabling Secure Boot and configuring the virtual network adapter for MAC address spoofing_
-
 ---
 
 ## 6. Navigating First-Day Proxmox VE 9 Nuances
@@ -181,6 +177,9 @@ By default, Proxmox checks enterprise repositories and throws `401 Unauthorized`
 * Disable both enterprise sources: **`pve-enterprise`** and **`ceph-tentacle`**.
 * Click **Add** and select the community **`No-Subscription`** repository.
 
+![Proxmox VE 9 repository settings](/assets/img/posts/proxmox-ve-repositories-config.png)
+_Fig. 5. Disabling enterprise Ceph and PVE repositories in Proxmox VE 9 before adding the No-Subscription repo_
+
 ### 2. Connecting TrueNAS via NFS (The Maproot Gotcha)
 To allow Proxmox to store automated VM backups on TrueNAS:
 1. Create a `proxmox-backups` dataset in TrueNAS and export it over **NFS**.
@@ -190,6 +189,9 @@ To allow Proxmox to store automated VM backups on TrueNAS:
    *(Skipping this will cause Proxmox to hit `Permission Denied` errors during backup creation).*
 3. In Proxmox: `Datacenter → Storage → Add → NFS`:
    * Enter the TrueNAS IP, share path, and assign content types: **`ISO image, Container template, VZDump backup file`**.
+
+![Adding TrueNAS NFS storage in Proxmox VE](/assets/img/posts/proxmox-add-nfs-truenas-storage.png)
+_Fig. 6. TrueNAS NFS storage configuration in Proxmox: mapping backup dataset and content types_
 
 ### 3. Deploying the Docker Host VM (Ubuntu 24.04 LTS)
 * Download the Ubuntu ISO directly through the Proxmox GUI (`Download from URL`).
@@ -205,8 +207,8 @@ sudo systemctl enable --now qemu-guest-agent
 ```
 At idle, a minimal Ubuntu 24.04 install consumes merely **~430 MB of RAM**!
 
-![Ubuntu 24.04 VM metrics overview in Proxmox VE 9](/assets/img/posts/proxmox-ve-ubuntu-vm-summary.png)
-_Fig. 6. Ubuntu 24.04 VM summary in Proxmox VE 9: lean resource utilization with ~430 MiB of idle RAM consumption_
+![Ubuntu 24.04 VM metrics overview in Proxmox VE 9](/assets/img/posts/proxmox-ve-ubuntu-vm-summary.jpg)
+_Fig. 7. Ubuntu 24.04 VM metrics dashboard in Proxmox VE 9: lean resource utilization with ~430 MiB of idle RAM consumption_
 
 > [!TIP]
 > **Ubuntu Server LVM Trick:** By default, the Ubuntu installer allocates only 50% of the virtual disk to the root `/` logical volume. Expand it to 100% instantly with a single command:
@@ -217,9 +219,6 @@ _Fig. 6. Ubuntu 24.04 VM summary in Proxmox VE 9: lean resource utilization with
 ### 4. The "Missing Backup" Rookie Trap
 After completing my first test backup to the TrueNAS NFS share (`Backup now`), I opened `VM → Backup` only to see a completely blank list!
 The explanation is simple: in the upper-right corner of the backup panel, the **`Storage`** dropdown defaults to `local`. Switching the filter to `truenas_backups` immediately revealed the backup archive.
-
-![Proxmox VE backup storage selector dropdown](/assets/img/posts/proxmox-truenas-nfs-backup-trap.jpg)
-_Fig. 7. Resolving the Proxmox backup view: selecting the 'truenas_backups' NFS storage filter reveals the backup archive_
 
 ---
 
