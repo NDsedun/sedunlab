@@ -35,6 +35,9 @@ My primary TrueNAS node was constructed on a legacy platform that has earned leg
 * **CPU:** 4-core `Intel Core i5-3550` (3.3 GHz, 77W TDP, legacy Intel HD Graphics 2500).
 * **RAM:** `24 GB DDR3-1333` in dual-channel (`4+8+4+8 GB` layout, providing a generous cache for the ZFS Adaptive Replacement Cache / ARC).
 
+![TrueNAS SCALE hardware dashboard](/assets/img/posts/truenas-scale-hardware-specs.jpg)
+_Fig. 2. TrueNAS SCALE hardware telemetry dashboard: Core i5-3550 CPU and 24 GB DDR3 RAM on an ASUS desktop motherboard_
+
 On this single machine, two distinct software tiers operated simultaneously:
 
 1. **Ubuntu 24.04 LTS VM inside TrueNAS** (allocated 2 GB RAM, 28 GB virtual disk) hosting 8 critical Docker containers:
@@ -43,10 +46,17 @@ On this single machine, two distinct software tiers operated simultaneously:
    * Observability stack: `prometheus`, `grafana`, `node-exporter`, `docker-proxy`;
    * `couchdb` — synchronization backend for my Obsidian second brain;
    * `tuya-dashboard` — smart home telemetry board.
+
+![Active Docker containers inside the TrueNAS Ubuntu VM](/assets/img/posts/truenas-vm-docker-containers.jpg)
+_Fig. 3. Active Docker containers listed via SSH inside the TrueNAS Ubuntu virtual machine_
+
 2. **TrueNAS SCALE Apps (Native Catalog Workloads):**
    * Media & document libraries: `jellyfin`, `plex`, `photoprism`, `audiobookshelf`, `kavita`;
    * Networking & metrics: `homepage`, `uptime-kuma`, `tailscale`;
    * Torrent downloader: `transmission`.
+
+![Installed applications on TrueNAS SCALE](/assets/img/posts/truenas-apps-docker-overview.jpg)
+_Fig. 4. Native TrueNAS SCALE Apps catalog overview running on the primary storage node_
 
 ---
 
@@ -156,6 +166,9 @@ Four Hyper-V configuration parameters are mandatory to avoid network connectivit
    > [!IMPORTANT]
    > Without `MacAddressSpoofing On`, the Proxmox host will obtain an IP address on your local LAN, but nested VMs and LXC containers inside it will be completely unable to reach the network!
 
+![Hyper-V VM settings for Proxmox VE](/assets/img/posts/hyper-v-proxmox-vm-settings.png)
+_Fig. 5. Hyper-V VM configuration: Disabling Secure Boot and configuring the virtual network adapter for MAC address spoofing_
+
 ---
 
 ## 6. Navigating First-Day Proxmox VE 9 Nuances
@@ -192,6 +205,9 @@ sudo systemctl enable --now qemu-guest-agent
 ```
 At idle, a minimal Ubuntu 24.04 install consumes merely **~430 MB of RAM**!
 
+![Ubuntu 24.04 VM metrics overview in Proxmox VE 9](/assets/img/posts/proxmox-ve-ubuntu-vm-summary.png)
+_Fig. 6. Ubuntu 24.04 VM summary in Proxmox VE 9: lean resource utilization with ~430 MiB of idle RAM consumption_
+
 > [!TIP]
 > **Ubuntu Server LVM Trick:** By default, the Ubuntu installer allocates only 50% of the virtual disk to the root `/` logical volume. Expand it to 100% instantly with a single command:
 > ```bash
@@ -201,6 +217,9 @@ At idle, a minimal Ubuntu 24.04 install consumes merely **~430 MB of RAM**!
 ### 4. The "Missing Backup" Rookie Trap
 After completing my first test backup to the TrueNAS NFS share (`Backup now`), I opened `VM → Backup` only to see a completely blank list!
 The explanation is simple: in the upper-right corner of the backup panel, the **`Storage`** dropdown defaults to `local`. Switching the filter to `truenas_backups` immediately revealed the backup archive.
+
+![Proxmox VE backup storage selector dropdown](/assets/img/posts/proxmox-truenas-nfs-backup-trap.jpg)
+_Fig. 7. Resolving the Proxmox backup view: selecting the 'truenas_backups' NFS storage filter reveals the backup archive_
 
 ---
 
